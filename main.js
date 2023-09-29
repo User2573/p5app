@@ -1,7 +1,7 @@
 let myShader;
 
 function preload() {
-    myShader = loadShader('./glsl/shader.vert', './shader.frag');
+    myShader = loadShader('glsl/shader.vert', 'glsl/shader.frag');
 }
 
 function setup() {
@@ -17,5 +17,7 @@ function windowResized() {
 
 
 function draw() {
-    shader(shader);
+    shader(myShader);
+    myShader.setUniform('iResolution', [width, height])
+    rect(0, 0, width, height);
 }

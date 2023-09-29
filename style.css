@@ -1,0 +1,26 @@
+:root {
+    --dark: #232329;
+    --mid: #36374D;
+    --light: #C2C2CA;
+    --high1: #AF8D19;
+    --high2: #3A8885;
+}
+
+body {
+    background: var(--dark);
+    color: var(--light);
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+input {
+    background: var(--mid);
+    padding: .75rem 2rem;
+    border-radius: .5rem;
+    border: 1px solid rgb(255 255 255 / .1);
+    
+    font-size: 1rem;
+    color: var(--light);
+}
