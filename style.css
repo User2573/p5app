@@ -1,65 +1,43 @@
-@import url('https://fonts.googleapis.com/css2?family=Gabarito&display=swap');
-
-:root {
-    --dark: #151519;
-    --mid: #35323B;
-    --light: #C2C2CA;
-    --high1: #AF8D19;
-    --high2: #3A8885;
-}
-/* https://mycolor.space/?hex=%23232329&sub=1 */
 body, html {
     height: 100%;
     margin: 0;
     padding: 0;
 }
-body {
-    background: rgb(0 2 10);
-    overflow: hidden;
-    color: var(--light);
-    font-family: sans-serif;
 
+body {
     display: flex;
+    align-items: center;
     justify-content: center;
 }
 
 main {
-    width: 30rem;
+    background: rgb(255 0 0 / .2);
+
+    width: 40rem;
     height: 30rem;
-    border-radius: 1rem;
-    background: var(--dark);
+
+    display: flex;
+    justify-content: center;
+}
+
+main div {
+    width: 80%;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
-    align-items: center;
 }
 
-main * {
-    flex-grow: 0;
+h1 {
+    font-size: 2rem;
 }
 
-h1, h2 {
-    text-align: center;
+label {
+    font-size: 1rem;
+    display: block;
 }
 
 input {
     display: block;
-    width: 12rem;
 
-    --border-width: 1px;
-    --border-lightness: .1;
-    background: var(--mid);
-    padding: .75rem 2rem;
-    border-radius: .5rem;
-    border: 0;
-    box-shadow: 0 0 0 var(--border-width) rgb(255 255 255 / var(--border-lightness)) inset;
-    
-    font-size: 1rem;
-    color: var(--light);
-}
-
-input:focus {
-    --border-width: 2px;
-    --border-lightness: .2;
-    outline: none;
+    width: 80%;
 }
