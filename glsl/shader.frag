@@ -6,5 +6,5 @@ varying vec2 fragCoord;
 
 
 void main() {
-  gl_FragColor = vec4(fragCoord, 0, 1);
+    gl_FragColor = vec4(vec3(fragCoord.x), 1);
 }
