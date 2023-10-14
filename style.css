@@ -29,7 +29,7 @@ canvas {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgb(0 0 255 / .5);
+    background: rgb(0 0 0);
 }
 
 main {
@@ -45,6 +45,12 @@ main {
     -webkit-backdrop-filter: blur(10px);
 
     box-sizing: border-box;
+}
+
+@media screen and (max-width: 40rem) {
+    main {
+        background: rgba(255 0 0 / .1);
+    }
 }
 
 main > div {
@@ -79,11 +85,20 @@ label {
 }
 
 label span {
+    display: flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    align-items: flex-end;
+    justify-content: flex-end;
     font-family: 'Material Symbols Outlined';
     font-size: 1.2rem;
 }
+
+label span:hover {
+    opacity: 1 !important;
+}
 label:not(:has(+input:hover, +input:focus)) span {
-    opacity: 0 !important;
+    visibility: hidden;
 }
 
 input, button {

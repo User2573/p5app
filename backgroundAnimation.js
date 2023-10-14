@@ -17,22 +17,41 @@ window.addEventListener('resize', () => {
 
 
 
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const material = new THREE.MeshPhongMaterial({
+    color: 0x00ff00,
+    shininess: 80
+});
 const group = new THREE.Group();
-for (const _ of Array(10).keys()) {
+for (const i of Array(10).keys()) {
+    for (const j of Array(10).keys()) {
     const geometry = new THREE.BoxGeometry(1,1,1);
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(0, 15-3*_, 0);
+    const rand = () => -15+30*Math.random()
+    mesh.position.set(rand(), rand(), 0);
+    mesh.quaternion.set(rand(),rand(),rand(),rand()).normalize();
     group.add(mesh);
+    }
 }
 scene.add(group);
 
+const directionalLight = new THREE.DirectionalLight(0xffffff, .2);
+directionalLight.position.set(1,2,3);
+scene.add(directionalLight);
+const pointLight = new THREE.PointLight(0xffffff, 500);
+pointLight.position.set(0,0,-5);
+scene.add(pointLight);
+scene.add(new THREE.AmbientLight(0x202020));
+
+let time = 0;
 function animate() {
+    time += .005;
     camera.position.z = 15;
+    pointLight.position.x = 15 * Math.cos(5*time);
+    pointLight.position.y = 15 * Math.sin(4*time);
     
     for (const obj of group.children) {
-        obj.rotation.x += 0.01;
-        obj.rotation.y += 0.01;
+        obj.rotation.x = Math.abs(Math.sin(obj.position.x))*time;
+        obj.rotation.y = Math.abs(Math.sin(obj.position.y))*time;
     }
     
 	renderer.render(scene, camera);
