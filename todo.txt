@@ -1,0 +1,5 @@
+make labels pseudo elements & put the show password inside input
+
+add cool button animation/transition to success page
+
+make better bg
