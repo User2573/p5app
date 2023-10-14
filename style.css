@@ -71,7 +71,7 @@ p {
 }
 
 label {
-    height: 2.5rem;
+    height: 2.5em;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;

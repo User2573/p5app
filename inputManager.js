@@ -1,6 +1,11 @@
 const loginButton = document.getElementById('login');
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
+const errorOutput = document.getElementById('error');
+
+
+
+
 
 const toggleShowPassword = document.getElementById('showpw');
 let show = false;
@@ -15,8 +20,43 @@ toggleShowPassword.addEventListener('click', () => updateShowPassword(!show));
 passwordInput.addEventListener('blur', () => updateShowPassword(false));
 
 
+
+
+
+const hash = x => {
+    x = Math.sin(x) * 43758.5453123;
+    return x - Math.floor(x);
+};
+const validateUsername = (username, error) => {
+    if (username.length < 3) {
+        error('Username must be at least 3 characters.');
+        return false;
+    }
+    if (username.length > 15) {
+        error('Username must be at most 15 characters.');
+        return false;
+    }
+    if (Array.from(username).some(x => !'abcdef'.includes(x))) {
+        error('Username can only contain alphanumeric characters and underscores.');
+        return false;
+    }
+    if (Array.length > 0 &&
+        hash((Array.from(username)
+            .map(x => x.charCodeAt(0))
+            .reduce((a,b) => a + b))
+        ) < .3
+        ) {
+        error('Username already taken.');
+        return false;
+    };
+    return true;
+}
 loginButton.addEventListener('click', e => {
     e.preventDefault();
-    console.log(usernameInput.value);
-    console.log(passwordInput.value);
+    
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value;
+    validateUsername(username, x => {
+        errorOutput.textContent = x;
+    });
 })
