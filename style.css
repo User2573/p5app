@@ -43,6 +43,7 @@ main {
     
     background: rgba(var(--darkv) / .8);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 
     box-sizing: border-box;
 }
