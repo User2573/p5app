@@ -1,4 +1,8 @@
-import * as THREE from 'https://unpkg.com/three@0.157.0/build/three.module.js';
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 const renderer = new THREE.WebGLRenderer();
@@ -11,7 +15,32 @@ window.addEventListener('resize', () => {
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-})
+});
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+composer.addPass(new ShaderPass({
+	uniforms: {
+		'tDiffuse': { value: null },
+	},
+
+	vertexShader: /* glsl */`
+        varying vec2 uv;
+		void main() {
+            uv = uv;
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+		}`,
+
+	fragmentShader: /* glsl */`
+		uniform float opacity;
+		uniform sampler2D tDiffuse;
+		varying vec2 uv;
+
+		void main() {
+			vec4 texel = texture2D( tDiffuse, uv );
+			gl_FragColor = texel;
+		}`
+}));
+composer.addPass(new OutputPass());
 
 
 
@@ -54,7 +83,7 @@ function animate() {
         obj.rotation.y = Math.abs(Math.sin(obj.position.y))*time;
     }
     
-	renderer.render(scene, camera);
+	composer.render();
     requestAnimationFrame(animate);
 }
 

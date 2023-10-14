@@ -133,4 +133,5 @@ button {
     background: var(--high);
     text-align: center;
     font-size: 1.2rem;
+    font-family: 'Libre Baskerville', serif;
 }
