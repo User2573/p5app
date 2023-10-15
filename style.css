@@ -119,7 +119,7 @@ input, button {
 input:hover, input:focus {
     --outline-width: 2px;
 }
-button:hover {
+button:hover, button:focus {
     --outline-width: 3px;
 }
 

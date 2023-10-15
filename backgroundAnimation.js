@@ -6,41 +6,10 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 const renderer = new THREE.WebGLRenderer();
+renderer.setPixelRatio(Math.max(2,window.devicePixelRatio));
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio)
 document.body.appendChild(renderer.domElement);
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight
-    camera.updateProjectionMatrix()
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-});
-const composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
-composer.addPass(new ShaderPass({
-	uniforms: {
-		'tDiffuse': { value: null },
-	},
-
-	vertexShader: /* glsl */`
-        varying vec2 uv;
-		void main() {
-            uv = uv;
-			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-		}`,
-
-	fragmentShader: /* glsl */`
-		uniform float opacity;
-		uniform sampler2D tDiffuse;
-		varying vec2 uv;
-
-		void main() {
-			vec4 texel = texture2D( tDiffuse, uv );
-			gl_FragColor = texel;
-		}`
-}));
-composer.addPass(new OutputPass());
 
 
 
@@ -51,8 +20,8 @@ const material = new THREE.MeshPhongMaterial({
     shininess: 80
 });
 const group = new THREE.Group();
-for (const i of Array(10).keys()) {
-    for (const j of Array(10).keys()) {
+for (const i of Array(20).keys()) {
+    for (const j of Array(20).keys()) {
     const geometry = new THREE.BoxGeometry(1,1,1);
     const mesh = new THREE.Mesh(geometry, material);
     const rand = () => -15+30*Math.random()
@@ -71,10 +40,47 @@ pointLight.position.set(0,0,-5);
 scene.add(pointLight);
 scene.add(new THREE.AmbientLight(0x202020));
 
-let time = 0;
+
+
+
+
+
+const clock = new THREE.Clock();
+
+const composer = new EffectComposer(renderer);
+const postShader = new ShaderPass({
+	uniforms: {
+		'tDiffuse': { value: null },
+        'uTime': { value: 0 },
+        'uResolution' : { value: renderer.getSize(new THREE.Vector2()) }
+	},
+	vertexShader: `varying vec2 UV;void main(){UV=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1);}`,
+	fragmentShader: await (await fetch('postprocessing.frag')).text()
+});
+composer.addPass(new RenderPass(scene, camera));
+composer.addPass(postShader);
+composer.addPass(new OutputPass());
+
+
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
+    renderer.getSize(postShader.material.uniforms.uResolution.value);
+});
+
+
+
+
+
+
+
+camera.position.z = 15;
 function animate() {
-    time += .005;
-    camera.position.z = 15;
+    const time = .5*clock.getElapsedTime();
+    postShader.material.uniforms.uTime.value = time;
     pointLight.position.x = 15 * Math.cos(5*time);
     pointLight.position.y = 15 * Math.sin(4*time);
     
