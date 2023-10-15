@@ -7,6 +7,9 @@ const errorOutput = document.getElementById('error');
 
 
 
+/*
+    SHOW AND HIDE PASSWORD
+*/
 const toggleShowPassword = document.getElementById('showpw');
 let show = false;
 const updateShowPassword = s =>  {
@@ -24,7 +27,9 @@ passwordInput.addEventListener('blur', () => updateShowPassword(false));
 
 
 
-
+/*
+    INPUT VALIDATION
+*/
 const hash = x => {
     x = Math.sin(x) * 43758.5453123;
     return x - Math.floor(x);
@@ -75,6 +80,13 @@ loginButton.addEventListener('click', e => {
     }
 })
 
+
+
+
+
+/*
+    SUCCESS TRANSITION
+*/
 const loginSuccess = () => {
     errorOutput.textContent = 'succ';
 };

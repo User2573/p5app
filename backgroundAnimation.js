@@ -28,7 +28,7 @@ for (const i of Array(10).keys()) {
         const mesh = new THREE.Mesh(geometry, material.clone());
         mesh.position.set(rand()*30-15, rand()*30-15, 0);
         mesh.position.set(2*i-10+2*rand(),2*j-10+2*rand(),0)
-        mesh.material.color.add(new THREE.Color(rand()-.5,rand()-.5,rand()-.5).multiplyScalar(.5));
+        mesh.material.color.add(new THREE.Color(rand()-.5,rand()-.5,rand()-.5).multiplyScalar(.7));
         group.add(mesh);
     }
 }
@@ -87,8 +87,8 @@ function animate() {
     pointLight.position.y = 15 * Math.sin(1*time);
     
     for (const obj of group.children) {
-        obj.rotation.x = Math.abs(Math.sin(obj.position.x))*time;
-        obj.rotation.y = Math.abs(Math.sin(obj.position.y))*time;
+        obj.rotation.x = .2*time * Math.abs(Math.sin(100*obj.position.x));
+        obj.rotation.y = .2*time * Math.abs(Math.sin(100*obj.position.y));
     }
     
 	composer.render();
