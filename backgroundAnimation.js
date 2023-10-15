@@ -6,7 +6,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 const renderer = new THREE.WebGLRenderer();
-renderer.setPixelRatio(Math.max(2,window.devicePixelRatio));
+renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -17,28 +17,30 @@ document.body.appendChild(renderer.domElement);
 
 const material = new THREE.MeshPhongMaterial({
     color: 0x00ff00,
-    shininess: 80
+    shininess: 200
 });
 const group = new THREE.Group();
-for (const i of Array(20).keys()) {
-    for (const j of Array(20).keys()) {
-    const geometry = new THREE.BoxGeometry(1,1,1);
-    const mesh = new THREE.Mesh(geometry, material);
-    const rand = () => -15+30*Math.random()
-    mesh.position.set(rand(), rand(), 0);
-    mesh.quaternion.set(rand(),rand(),rand(),rand()).normalize();
-    group.add(mesh);
+for (const i of Array(10).keys()) {
+    for (const j of Array(10).keys()) {
+        const rand = Math.random;
+        const geometry = new THREE.BoxGeometry(1,1,1);
+        geometry.applyQuaternion(new THREE.Quaternion(rand(),rand(),rand(),rand()).normalize());
+        const mesh = new THREE.Mesh(geometry, material.clone());
+        mesh.position.set(rand()*30-15, rand()*30-15, 0);
+        mesh.position.set(2*i-10+2*rand(),2*j-10+2*rand(),0)
+        mesh.material.color.add(new THREE.Color(rand()-.5,rand()-.5,rand()-.5).multiplyScalar(.5));
+        group.add(mesh);
     }
 }
 scene.add(group);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, .2);
+scene.add(new THREE.AmbientLight(0x202020));
+const directionalLight = new THREE.DirectionalLight(0xffffff, .5);
 directionalLight.position.set(1,2,3);
 scene.add(directionalLight);
 const pointLight = new THREE.PointLight(0xffffff, 500);
 pointLight.position.set(0,0,-5);
 scene.add(pointLight);
-scene.add(new THREE.AmbientLight(0x202020));
 
 
 
