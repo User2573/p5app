@@ -79,10 +79,10 @@ window.addEventListener('resize', () => {
 
 camera.position.z = 15;
 function animate() {
-    const time = .5*clock.getElapsedTime();
+    const time = clock.getElapsedTime();
     postShader.material.uniforms.uTime.value = time;
-    pointLight.position.x = 15 * Math.cos(5*time);
-    pointLight.position.y = 15 * Math.sin(4*time);
+    pointLight.position.x = 15 * Math.cos(1.9*time);
+    pointLight.position.y = 15 * Math.sin(1*time);
     
     for (const obj of group.children) {
         obj.rotation.x = Math.abs(Math.sin(obj.position.x))*time;
