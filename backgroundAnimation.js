@@ -26,8 +26,7 @@ for (const i of Array(10).keys()) {
         const geometry = new THREE.BoxGeometry(1,1,1);
         geometry.applyQuaternion(new THREE.Quaternion(rand(),rand(),rand(),rand()).normalize());
         const mesh = new THREE.Mesh(geometry, material.clone());
-        mesh.position.set(rand()*30-15, rand()*30-15, 0);
-        mesh.position.set(2*i-10+2*rand(),2*j-10+2*rand(),0)
+        mesh.position.set(2*i-10+2*rand(),2*j-10+2*rand(),-1+2*rand())
         mesh.material.color.add(new THREE.Color(rand()-.5,rand()-.5,rand()-.5).multiplyScalar(.7));
         group.add(mesh);
     }
@@ -39,7 +38,6 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, .5);
 directionalLight.position.set(1,2,3);
 scene.add(directionalLight);
 const pointLight = new THREE.PointLight(0xffffff, 500);
-pointLight.position.set(0,0,-5);
 scene.add(pointLight);
 
 
@@ -85,6 +83,7 @@ function animate() {
     postShader.material.uniforms.uTime.value = time;
     pointLight.position.x = 15 * Math.cos(1.9*time);
     pointLight.position.y = 15 * Math.sin(1*time);
+    pointLight.position.z = -5;
     
     for (const obj of group.children) {
         obj.rotation.x = .2*time * Math.abs(Math.sin(100*obj.position.x));

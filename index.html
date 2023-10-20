@@ -23,20 +23,28 @@
     <script type="module" src="backgroundAnimation.js"></script>
     <script type="module" src="inputManager.js"></script>
 </head>
-<body>
+<body style="background: black">
     <main>
     <div>
         <div>
             <h1>Login &darr;&darr;</h1>
             <p id="error"></p>
         </div>
-        <form autocomplete="off">
+        <form id="form" autocomplete="off">
             <label for="username">Username</label>
             <input id="username" />
 
-            <label for="password">Password <span id="showpw" style="opacity:.6">&#xe8f5;</span></label>
+            <label for="password">Password
+                <span id="showpw" style="opacity:.6">&#xe8f5;</span>
+            </label>
             <input id="password" type="password"/>
-            <button id="login" type="submit">Login</button>
+            <button id="login" type="submit">
+                <div id="login-text">Login</div>
+                <div id="login-ellipsis">&#8203;</div>
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </form>
     </div>
     </main>

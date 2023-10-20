@@ -1,4 +1,5 @@
 const loginButton = document.getElementById('login');
+const loginForm = document.getElementById('form');
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
 const errorOutput = document.getElementById('error');
@@ -9,6 +10,8 @@ const errorOutput = document.getElementById('error');
 window.addEventListener('DOMContentLoaded', () => {
     usernameInput.focus();
 });
+
+
 
 
 
@@ -33,6 +36,38 @@ passwordInput.addEventListener('blur', () => updateShowPassword(false));
 
 
 
+
+
+
+
+/*
+    SUCCESS TRANSITION
+*/
+const loginSuccess = () => {
+    errorOutput.textContent = '';
+    document.activeElement.blur();
+    loginButton.animate([
+        
+        {
+            filter: 'invert(.4) brightness(2)'
+        }
+    ],
+    {
+        fill: 'forwards',
+        duration: 1000,
+        easing: 'cubic-bezier(.7,0,.3,1)'
+    })
+};
+
+document.getElementsByTagName('h1')[0].addEventListener('click', loginSuccess);
+
+
+
+
+
+
+
+
 /*
     INPUT VALIDATION
 */
@@ -52,35 +87,30 @@ const tryLogin = (username, password, successCallback, failureCallback) => {
         passwordInput.focus();
         return;
     }
-    if (Array.from(username + password)
-            .map((_, i) => (username + password).charCodeAt(i))
-            .reduce((a, b) => hash(a*b + b))
-        < .5) {
-        failureCallback('Invalid username or password.');
-        return;
-    }
 
-    successCallback();
+    loginButton.classList.add('active');
+
+    setTimeout(() => {
+        if (Array.from(username + password)
+                .map((_, i) => (username + password).charCodeAt(i))
+                .reduce((a, b) => hash(a*b + b))
+            < .5) {
+            failureCallback('Invalid username or password.');
+            loginButton.classList.remove('active');
+            return;
+        }
+
+        loginButton.textContent = '\u200b';
+        successCallback();
+    }, 500 + 500 * Math.random());
 };
 
-loginButton.addEventListener('click', e => {
+loginForm.addEventListener('submit', e => {
     e.preventDefault();
     
     const username = usernameInput.value.trim();
     const password = passwordInput.value;
 
     tryLogin(username, password, loginSuccess,
-        err => { errorOutput.textContent = err; }
-    );
+        err => { errorOutput.textContent = err; });
 })
-
-
-
-
-
-/*
-    SUCCESS TRANSITION
-*/
-const loginSuccess = () => {
-    errorOutput.textContent = '';
-};

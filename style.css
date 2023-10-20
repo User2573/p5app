@@ -137,3 +137,19 @@ button {
     font-size: 1.2rem;
     font-family: 'Libre Baskerville', serif;
 }
+
+button div {
+    display: inline;
+}
+
+button.active div#text {
+    display: none;
+}
+
+button.active span {
+    display: inline-block;
+    width: .5rem;
+    height: .5rem;
+    border-radius: 100%;
+    background: rgba(255 255 255 / .5);
+}
