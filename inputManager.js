@@ -6,6 +6,12 @@ const errorOutput = document.getElementById('error');
 
 
 
+window.addEventListener('DOMContentLoaded', () => {
+    usernameInput.focus();
+});
+
+
+
 
 /*
     SHOW AND HIDE PASSWORD
@@ -34,38 +40,27 @@ const hash = x => {
     x = Math.sin(x) * 43758.5453123;
     return x - Math.floor(x);
 };
-const validateUsername = (username, error) => {
-    if (username.length < 3) {
-        error('Username too short.');
-        return false;
-    }
-    if (username.length > 20) {
-        error('Username too long.');
-        return false;
-    }
-    if (!/^[a-zA-z0-9_]+$/.test(username)) {
-        error('Username can only contain alphanumeric characters and underscores.');
-        return false;
-    }
-    if (hash((Array.from(username)
-            .map(x => x.charCodeAt(0))
-            .reduce((a,b) => a + b))) < .3) {
-        error('Username already taken.');
-        return false;
-    };
-    return true;
-};
 
-const validatePassword = (password, error) => {
-    if (password.length < 5) {
-        error('Password too short.');
-        return false;
+const tryLogin = (username, password, successCallback, failureCallback) => {
+    if (username.length == 0) {
+        failureCallback('Username is empty.');
+        usernameInput.focus();
+        return;
     }
-    if (password.length > 30) {
-        error('Password too long.');
-        return false;
+    if (password.length == 0) {
+        failureCallback('Password is empty.');
+        passwordInput.focus();
+        return;
     }
-    return true;
+    if (Array.from(username + password)
+            .map((_, i) => (username + password).charCodeAt(i))
+            .reduce((a, b) => hash(a*b + b))
+        < .5) {
+        failureCallback('Invalid username or password.');
+        return;
+    }
+
+    successCallback();
 };
 
 loginButton.addEventListener('click', e => {
@@ -73,11 +68,10 @@ loginButton.addEventListener('click', e => {
     
     const username = usernameInput.value.trim();
     const password = passwordInput.value;
-    const error = s => errorOutput.textContent = s;
-    if (validateUsername(username, error) &&
-        validatePassword(password, error)) {
-        loginSuccess();
-    }
+
+    tryLogin(username, password, loginSuccess,
+        err => { errorOutput.textContent = err; }
+    );
 })
 
 
@@ -88,5 +82,5 @@ loginButton.addEventListener('click', e => {
     SUCCESS TRANSITION
 */
 const loginSuccess = () => {
-    errorOutput.textContent = 'succ';
+    errorOutput.textContent = '';
 };
