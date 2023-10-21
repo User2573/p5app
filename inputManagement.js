@@ -43,8 +43,8 @@ passwordInput.addEventListener('blur', () => updateShowPassword(false));
 /*
     SUCCESS TRANSITION
 */
-const loginSuccess = () => {
-    loginButton.animate([
+const loginSuccessAnimation = async () => {
+    await loginButton.animate([
         
         {
             filter: 'invert(.4) brightness(2)'
@@ -54,10 +54,8 @@ const loginSuccess = () => {
         fill: 'forwards',
         duration: 1000,
         easing: 'cubic-bezier(.3,0,1,.7)'
-    });
+    }).finished;
 };
-
-document.getElementsByTagName('h1')[0].addEventListener('click', loginSuccess);
 
 
 
@@ -103,6 +101,7 @@ const tryLogin = (username, password, successCallback, failureCallback) => {
 };
 
 loginForm.addEventListener('submit', e => {
+    console.log('submitted');
     e.preventDefault();
     
     const username = usernameInput.value.trim();
@@ -112,7 +111,7 @@ loginForm.addEventListener('submit', e => {
         () => {        
             errorOutput.textContent = '';
             document.activeElement.blur();
-            setTimeout(loginSuccess, 300);
+            setTimeout(loginSuccessAnimation, 300);
         },
         err => {
             errorOutput.textContent = err;
