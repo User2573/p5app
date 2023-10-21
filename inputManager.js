@@ -44,8 +44,6 @@ passwordInput.addEventListener('blur', () => updateShowPassword(false));
     SUCCESS TRANSITION
 */
 const loginSuccess = () => {
-    errorOutput.textContent = '';
-    document.activeElement.blur();
     loginButton.animate([
         
         {
@@ -55,8 +53,8 @@ const loginSuccess = () => {
     {
         fill: 'forwards',
         duration: 1000,
-        easing: 'cubic-bezier(.7,0,.3,1)'
-    })
+        easing: 'cubic-bezier(.3,0,1,.7)'
+    });
 };
 
 document.getElementsByTagName('h1')[0].addEventListener('click', loginSuccess);
@@ -88,19 +86,18 @@ const tryLogin = (username, password, successCallback, failureCallback) => {
         return;
     }
 
-    loginButton.classList.add('active');
+    loginButton.classList.add('waiting');
 
     setTimeout(() => {
+        loginButton.classList.remove('waiting');
         if (Array.from(username + password)
                 .map((_, i) => (username + password).charCodeAt(i))
                 .reduce((a, b) => hash(a*b + b))
             < .5) {
             failureCallback('Invalid username or password.');
-            loginButton.classList.remove('active');
             return;
         }
-
-        loginButton.textContent = '\u200b';
+        loginButton.classList.add('success');
         successCallback();
     }, 500 + 500 * Math.random());
 };
@@ -111,6 +108,14 @@ loginForm.addEventListener('submit', e => {
     const username = usernameInput.value.trim();
     const password = passwordInput.value;
 
-    tryLogin(username, password, loginSuccess,
-        err => { errorOutput.textContent = err; });
+    tryLogin(username, password,
+        () => {        
+            errorOutput.textContent = '';
+            document.activeElement.blur();
+            setTimeout(loginSuccess, 300);
+        },
+        err => {
+            errorOutput.textContent = err;
+        }
+    );
 })

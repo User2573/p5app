@@ -131,6 +131,11 @@ input {
 }
 
 button {
+    /* for position absolute-centering success checkmark */
+    position: relative;
+    top: 0;
+    left: 0;
+
     margin-top: 2.5rem;
     background: var(--high);
     text-align: center;
@@ -138,18 +143,25 @@ button {
     font-family: 'Libre Baskerville', serif;
 }
 
-button div {
-    display: inline;
-}
-
-button.active div#text {
+button:is(.waiting, .success) span#login-text {
     display: none;
 }
 
-button.active span {
+button.waiting span.login-ellipsis {
     display: inline-block;
     width: .5rem;
     height: .5rem;
     border-radius: 100%;
     background: rgba(255 255 255 / .5);
+}
+
+button.success span#login-success::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    content: '\e876';
+    font-family: 'Material Symbols Outlined';
+    font-size: 2;
 }
