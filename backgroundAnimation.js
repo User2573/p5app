@@ -1,15 +1,39 @@
 import * as THREE from 'three';
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
-import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+
+
+const Animator = new (class Animator {
+    clock = new THREE.Clock(false);
+    #callbacks = [];
+
+    #animate() {
+        const time = this.clock.getElapsedTime();
+        for (const callback of this.#callbacks) {
+            callback(time);
+        }
+        requestAnimationFrame(this.#animate);
+    }
+
+    constructor() {
+        this.clock.start();
+        this.#animate();
+    }
+
+    addCallback(callback) {
+        this.#callbacks.push(callback);
+    }
+})();
+
+
+
+
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 const renderer = new THREE.WebGLRenderer();
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-
 
 
 
@@ -42,10 +66,12 @@ scene.add(pointLight);
 
 
 
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 
-
-const clock = new THREE.Clock();
 
 const composer = new EffectComposer(renderer);
 const postShader = new ShaderPass({
@@ -77,21 +103,21 @@ window.addEventListener('resize', () => {
 
 
 
-camera.position.z = 15;
-function animate() {
-    const time = clock.getElapsedTime();
-    postShader.material.uniforms.uTime.value = time;
-    pointLight.position.x = 15 * Math.cos(1.9*time);
-    pointLight.position.y = 15 * Math.sin(1*time);
-    pointLight.position.z = -5;
+// camera.position.z = 15;
+// function animate0() {
+//     const time = clock.getElapsedTime();
+//     postShader.material.uniforms.uTime.value = time;
+//     pointLight.position.x = 15 * Math.cos(1.9*time);
+//     pointLight.position.y = 15 * Math.sin(1*time);
+//     pointLight.position.z = -5;
     
-    for (const obj of group.children) {
-        obj.rotation.x = .2*time * Math.abs(Math.sin(100*obj.position.x));
-        obj.rotation.y = .2*time * Math.abs(Math.sin(100*obj.position.y));
-    }
+//     for (const obj of group.children) {
+//         obj.rotation.x = .2*time * Math.abs(Math.sin(100*obj.position.x));
+//         obj.rotation.y = .2*time * Math.abs(Math.sin(100*obj.position.y));
+//     }
     
-	composer.render();
-    requestAnimationFrame(animate);
-}
+// 	composer.render();
+//     requestAnimationFrame(animate0);
+// }
 
-animate();
+// animate0();
