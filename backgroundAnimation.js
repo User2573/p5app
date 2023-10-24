@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 
 
-const Animator = new (class Animator {
+const animator = new (class Animator {
     clock = new THREE.Clock(false);
     #callbacks = [];
 
@@ -15,13 +15,13 @@ const Animator = new (class Animator {
         requestAnimationFrame(() => this.#animate());
     }
 
-    constructor() {
-        this.clock.start();
-        this.#animate();
-    }
-
     addCallback(callback) {
         this.#callbacks.push(callback);
+    }
+
+    start() {
+        this.clock.start();
+        this.#animate();
     }
 })();
 
@@ -35,11 +35,59 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-})
+
+
+
+
+
+class Trail {
+    constructor(points, material) {
+        this.point = points[0];
+        this.positions = new Float32Array(points.flatMap(p => [p.x, p.y, p.z]));
+        this.mesh = new THREE.Mesh(
+            new THREE.BufferGeometry().setAttribute('position',
+                new THREE.BufferAttribute(this.positions, 3).setUsage(THREE.StreamDrawUsage)
+            ),
+            material
+        );
+    }
+
+    addPoint(point) {
+        this.point = point;
+        this.positions.copyWithin(3, 0, this.positions.length);
+        this.positions[0] = point.x;
+        this.positions[1] = point.y;
+        this.positions[2] = point.z;
+    }
+};
+
+const axis = new THREE.Vector3(1, 2, 3).normalize();
+const trails = [];
+for (let i = 0; i < 1; i++) {
+    const length = i + 50;
+    const points = Array(length).fill(0).map(() => new THREE.Vector3(
+        Math.cos(7*i),
+        Math.sin(11*i),
+        Math.cos(13*i)
+    ));
+    const trail = new Trail(
+        points,
+        new THREE.LineBasicMaterial({
+            color: 0xffffff,
+            linewidth: 100
+        })
+    );
+    scene.add(trail.mesh);
+    trails.push(trail);
+}
+
+animator.addCallback((time, dt) => {
+    for (const trail of trails) {
+        const newPoint = trail.point.clone().add(axis.clone().multiplyScalar(.1));
+        trail.addPoint(newPoint);
+    }
+});
+
 
 
 
@@ -70,7 +118,7 @@ composer.addPass(new RenderPass(scene, camera));
 composer.addPass(postShader);
 composer.addPass(new OutputPass());
 
-Animator.addCallback(time => {
+animator.addCallback(time => {
     renderer.getSize(postShader.material.uniforms.uResolution.value);
     composer.render();
     postShader.material.uniforms.uTime.value = time;
@@ -81,6 +129,9 @@ Animator.addCallback(time => {
 
 
 window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
     composer.setSize(window.innerWidth, window.innerHeight);
 });
 
@@ -90,7 +141,7 @@ window.addEventListener('resize', () => {
 
 
 
-camera.position.z = 15;
+animator.start();
 // function animate0() {
 //     const time = clock.getElapsedTime();
 //     postShader.material.uniforms.uTime.value = time;
