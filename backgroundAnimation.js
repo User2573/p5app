@@ -8,10 +8,11 @@ const Animator = new (class Animator {
 
     #animate() {
         const time = this.clock.getElapsedTime();
+        const dt = this.clock.getDelta();
         for (const callback of this.#callbacks) {
-            callback(time);
+            callback(time, dt);
         }
-        requestAnimationFrame(this.#animate);
+        requestAnimationFrame(() => this.#animate());
     }
 
     constructor() {
@@ -34,35 +35,17 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+})
 
 
 
 
 
-const material = new THREE.MeshPhongMaterial({
-    color: 0x00ff00,
-    shininess: 200
-});
-const group = new THREE.Group();
-for (const i of Array(10).keys()) {
-    for (const j of Array(10).keys()) {
-        const rand = Math.random;
-        const geometry = new THREE.BoxGeometry(1,1,1);
-        geometry.applyQuaternion(new THREE.Quaternion(rand(),rand(),rand(),rand()).normalize());
-        const mesh = new THREE.Mesh(geometry, material.clone());
-        mesh.position.set(2*i-10+2*rand(),2*j-10+2*rand(),-1+2*rand())
-        mesh.material.color.add(new THREE.Color(rand()-.5,rand()-.5,rand()-.5).multiplyScalar(.7));
-        group.add(mesh);
-    }
-}
-scene.add(group);
 
-scene.add(new THREE.AmbientLight(0x202020));
-const directionalLight = new THREE.DirectionalLight(0xffffff, .5);
-directionalLight.position.set(1,2,3);
-scene.add(directionalLight);
-const pointLight = new THREE.PointLight(0xffffff, 500);
-scene.add(pointLight);
 
 
 
@@ -87,14 +70,18 @@ composer.addPass(new RenderPass(scene, camera));
 composer.addPass(postShader);
 composer.addPass(new OutputPass());
 
+Animator.addCallback(time => {
+    renderer.getSize(postShader.material.uniforms.uResolution.value);
+    composer.render();
+    postShader.material.uniforms.uTime.value = time;
+});
+
+
+
+
 
 window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
     composer.setSize(window.innerWidth, window.innerHeight);
-    renderer.getSize(postShader.material.uniforms.uResolution.value);
 });
 
 
@@ -103,18 +90,13 @@ window.addEventListener('resize', () => {
 
 
 
-// camera.position.z = 15;
+camera.position.z = 15;
 // function animate0() {
 //     const time = clock.getElapsedTime();
 //     postShader.material.uniforms.uTime.value = time;
-//     pointLight.position.x = 15 * Math.cos(1.9*time);
-//     pointLight.position.y = 15 * Math.sin(1*time);
-//     pointLight.position.z = -5;
+
     
-//     for (const obj of group.children) {
-//         obj.rotation.x = .2*time * Math.abs(Math.sin(100*obj.position.x));
-//         obj.rotation.y = .2*time * Math.abs(Math.sin(100*obj.position.y));
-//     }
+
     
 // 	composer.render();
 //     requestAnimationFrame(animate0);
