@@ -29,7 +29,7 @@ void main() {
 
     texel = mix(texel, gray*vec3(1.2, 1.0, 0.8),.4);
 
-    vec2 vignette = pow(4.*UV*(vec2(1)-UV),vec2(.3));
+    vec2 vignette = pow(4.*UV*(vec2(1)-UV),vec2(.5));
     texel *= vignette.x * vignette.y;
 
     

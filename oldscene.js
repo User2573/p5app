@@ -1,40 +1,58 @@
-const material = new THREE.MeshPhongMaterial({
-    color: 0x00ff00,
-    shininess: 200
-});
-const group = new THREE.Group();
-for (const i of Array(10).keys()) {
-    for (const j of Array(10).keys()) {
-        const rand = Math.random;
-        const geometry = new THREE.BoxGeometry(1,1,1);
-        geometry.applyQuaternion(new THREE.Quaternion(rand(),rand(),rand(),rand()).normalize());
-        const mesh = new THREE.Mesh(geometry, material.clone());
-        mesh.position.set(2*i-10+2*rand(),2*j-10+2*rand(),0)
-        mesh.material.color.add(new THREE.Color(rand()-.5,rand()-.5,rand()-.5).multiplyScalar(.7));
-        group.add(mesh);
-    }
-}
-scene.add(group);
-
-Animator.addCallback((time, dt) => {
-    for (const obj of group.children) {
-        obj.rotation.x = .2*time * Math.abs(Math.sin(100*obj.position.x));
-        obj.rotation.y = .2*time * Math.abs(Math.sin(100*obj.position.y));
-    }
-})
 
 
+// class Trail {
+//     constructor(points, material) {
+//         points = [...Array(100).keys()]
+//             .map(x => x / 99)
+//             .map(t => new THREE.Vector3(t, t, t));
+//         this.point = points[0];
+//         this.positions = new Float32Array(points.flatMap(p => [p.x, p.y, p.z]));
+//         this.mesh = new THREE.Mesh(
+//             new THREE.BufferGeometry().setAttribute('position',
+//                 new THREE.BufferAttribute(this.positions, 3).setUsage(THREE.StreamDrawUsage)
+//             ),
+//             material
+//         );
+//         // this.mesh.geometry.getAttribute('position').needsUpdate = true;
+//     }
+
+//     addPoint(point) {
+//         this.point = point;
+//         this.positions.copyWithin(3, 0, this.positions.length);
+//         this.positions[0] = point.x;
+//         this.positions[1] = point.y;
+//         this.positions[2] = point.z;
+//     }
+// };
+
+// const axis = new THREE.Vector3(1, 2, 3).normalize();
+// const trails = [];
+// for (let i = 0; i < 1; i++) {
+//     const length = i + 50;
+//     const points = Array(length).fill(0).map(() => new THREE.Vector3(
+//         Math.cos(7*i),
+//         Math.sin(11*i),
+//         Math.cos(13*i)
+//     ));
+//     const trail = new Trail(
+//         points,
+//         new THREE.LineBasicMaterial({
+//             color: 0xffffff,
+//             linewidth: 100
+//         })
+//     );
+//     scene.add(trail.mesh);
+//     trails.push(trail);
+// }
+// console.log(trails);
 
 
-scene.add(new THREE.AmbientLight(0x202020));
-const directionalLight = new THREE.DirectionalLight(0xffffff, .5);
-directionalLight.position.set(1,2,3);
-scene.add(directionalLight);
-const pointLight = new THREE.PointLight(0xffffff, 500);
-scene.add(pointLight);
 
-Animator.addCallback(time => {
-    pointLight.position.x = 15 * Math.cos(1.9*time);
-    pointLight.position.y = 15 * Math.sin(1*time);
-    pointLight.position.z = -5;
-})
+// animator.addCallback((time, dt) => {
+//     for (const trail of trails) {
+//         const newPoint = trail.point.clone().add(axis.clone().multiplyScalar(dt));
+//         trail.addPoint(newPoint);
+//     }
+// });
+
+
