@@ -13,7 +13,7 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.inner
 camera.position.z = 15;
 
 const dimensions = new THREE.Vector3();
-const scale = 2;
+const scale = 3;
 const updateDimensions = () =>
 {
     const raycaster = new THREE.Raycaster();
@@ -24,36 +24,44 @@ const updateDimensions = () =>
 };
 updateDimensions();
 
-const material = new THREE.MeshPhongMaterial({
-    color: 0x00ff00,
-    shininess: 200
-});
-const group = new THREE.Group();
+
+const instances = new THREE.InstancedMesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshPhongMaterial({
+        color: 0xffffff,
+        shininess: 200
+    }),
+    dimensions.x * dimensions.y
+);
 for (const i of Array(dimensions.x).keys()) {
     for (const j of Array(dimensions.y).keys()) {
-        const geometry = new THREE.BoxGeometry(1,1,1);
-        geometry.applyQuaternion(new THREE.Quaternion().random());
+        const index = i * dimensions.y + j;
+        //geometry.applyQuaternion();
 
-        const mesh = new THREE.Mesh(geometry, material.clone());
-
-        mesh.position.set(
-            (i - dimensions.x/2 + .5)*scale,
-            (j - dimensions.y/2 + .5)*scale,
-            0
-        ).add(new THREE.Vector3().randomDirection());
-        mesh.position.z *= 3;
-
-        mesh.material.color.add(new THREE.Color()
-            .setFromVector3(new THREE.Vector3()
-                .random()
-                .addScalar(-.5))
-            .multiplyScalar(.7)
+        instances.setMatrixAt(index, new THREE.Matrix4().compose(
+                new THREE.Vector3(
+                    (i - dimensions.x/2 + .5)*scale,
+                    (j - dimensions.y/2 + .5)*scale,
+                    0
+                ).add(
+                    new THREE.Vector3().randomDirection().multiply(new THREE.Vector3(1, 1, 3))
+                ),
+                new THREE.Quaternion().random(),
+                new THREE.Vector3(1, 1, 1)
+            )
         );
 
-        group.add(mesh);
+        instances.setColorAt(index, new THREE.Color()
+        .setFromVector3(new THREE.Vector3()
+            .random()
+            .addScalar(-.5)
+            .multiplyScalar(.5)
+            .add(new THREE.Vector3(0, 1, 0))))
+
     }
 }
-scene.add(group);
+instances.instanceColor.needsUpdate = true;
+scene.add(instances);
 
 
 scene.add(new THREE.AmbientLight(0x202020));
@@ -63,15 +71,20 @@ scene.add(directionalLight);
 const pointLight = new THREE.PointLight(0xffffff, 500);
 scene.add(pointLight);
 
-animator.addCallback(time => {
-    for (const obj of group.children) {
-        obj.rotation.x = .2*time * Math.abs(Math.sin(100*obj.position.x));
-        obj.rotation.y = .2*time * Math.abs(Math.sin(100*obj.position.y));
+animator.addCallback((time, dt) => {
+    for (let i = 0; i < dimensions.x * dimensions.y; i++) {
+        const mat = new THREE.Matrix4();
+        instances.getMatrixAt(i, mat);
+        mat.multiply(new THREE.Matrix4().makeRotationFromEuler(
+            new THREE.Euler(.2*dt, .2*dt, 0)
+        ));
+        instances.setMatrixAt(i, mat);
     }
+    instances.instanceMatrix.needsUpdate = true;
 
     pointLight.position.set(
-        dimensions.x*scale * Math.cos(2.3*time),
-        dimensions.y*scale * Math.sin(1.3*time),
+        dimensions.x*scale * Math.cos(1.9*time),
+        dimensions.y*scale * Math.sin(1.0*time),
         -5
     );
 })

@@ -90,12 +90,23 @@ p {
     font-size: 1rem;
 }
 
+a {
+    color: rgb(100 120 150);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+label, a {
+    opacity: .8;
+}
+
 label {
-    height: 2.5em;
+    height: 2em;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    opacity: .8;
 }
 
 label span {
@@ -123,7 +134,7 @@ input, button {
     width: 100%;
     border-radius: .5rem;
     box-shadow: inset 0 0 0 var(--outline-width) rgb(255 255 255 / .2);
-    padding: 1rem 2rem;
+    padding: .75rem 1.5rem;
 
     font-size: 1rem;
     font-family: 'Inter', sans-serif;
@@ -148,15 +159,15 @@ button {
     top: 0;
     left: 0;
 
-    margin-top: 2.5rem;
+    margin-top: 2rem;
     background: var(--high);
     text-align: center;
     font-size: 1.2rem;
     font-family: 'Libre Baskerville', serif;
 }
 
-button:is(.waiting, .success) span#login-text {
-    display: none;
+button:is(.waiting, .success) span:is(#login-submit, #signup-submit) {
+    display: none !important;
 }
 
 button.waiting span.login-ellipsis {
@@ -172,6 +183,7 @@ button.success span#login-success::before {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    
     font-size: 3rem;
     content: '\e876';
     font-family: 'Material Symbols Outlined';

@@ -15,6 +15,31 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
+/*
+    TOGGLE LOGIN OR SIGN UP
+*/
+let isLoginPage = false;
+const toggleLogin = document.getElementById('togglelogin');
+const loginHeader = document.getElementById('login-header');
+const signupHeader = document.getElementById('signup-header');
+const verifySection = document.getElementById('signup-verify');
+const loginSubmit = document.getElementById('login-submit');
+const signupSubmit = document.getElementById('signup-submit');
+const setLoginPage = state => {
+    isLoginPage = state;
+    toggleLogin.textContent = isLoginPage ? 'Sign up instead' : 'Log in instead'
+    loginHeader.style.display = isLoginPage ? 'unset' : 'none';
+    signupHeader.style.display = isLoginPage ? 'none' : 'unset';
+    verifySection.style.display = isLoginPage ? 'none' : 'unset';
+    loginSubmit.style.display = isLoginPage ? 'unset' : 'none';
+    signupSubmit.style.display = isLoginPage ? 'none' : 'unset';
+}
+toggleLogin.addEventListener('click', () => { setLoginPage(!isLoginPage); })
+
+
+
+
+
 
 /*
     SHOW AND HIDE PASSWORD

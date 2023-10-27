@@ -27,7 +27,14 @@
     <main>
     <div>
         <div>
-            <h1>Login &darr;&darr;</h1>
+            <h1>
+                <span id="login-header" style="display: none">Login</span>
+                <span id="signup-header">Sign up</span>
+                &darr;&darr;
+            </h1>
+            <a id="togglelogin">
+                <span>Log in instead</span>
+            </a>
             <p id="error"></p>
         </div>
         <form id="form" autocomplete="off">
@@ -38,9 +45,14 @@
                 <span id="showpw" style="opacity:.6">&#xe8f5;</span>
             </label>
             <input id="password" type="password"/>
+            <div id="signup-verify">
+                <label for="vpassword">Verify password</label>
+                <input id="vpassword" type="password"/>
+            </div>
             <button id="login" type="submit">
                 <span>&#8203;</span>
-                <span id="login-text">Login</span>
+                <span id="login-submit" style="display: none">Login</span>
+                <span id="signup-submit">Sign up</span>
                 <span class="login-ellipsis"></span>
                 <span class="login-ellipsis"></span>
                 <span class="login-ellipsis"></span>
