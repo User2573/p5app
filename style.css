@@ -38,9 +38,11 @@ main {
     z-index: 2;
 
     width: 40rem;
+    min-width: 30rem;
     max-width: 60%;
     height: 35rem;
     border-radius: 1rem;
+    transition: all .1s ease-in-out;
     
     background: rgba(var(--darkv) / .8);
     backdrop-filter: blur(10px);
@@ -51,13 +53,23 @@ main {
 
 @media screen and (max-width: 40rem) {
     main {
-        background: rgba(255 0 0 / .1);
+        border-radius: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+@media screen and (max-height: 40rem) {
+    main {
+        border-radius: 0;
+        height: 100%;
+        max-height: 100%;
     }
 }
 
 main > div {
     width: 60%;
-    height: 70%;
+    height: clamp(23rem, 70%, 25rem);
     position: relative;
     top: 50%;
     left: 50%;

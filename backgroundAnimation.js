@@ -14,13 +14,15 @@ camera.position.z = 15;
 
 const dimensions = new THREE.Vector3();
 const scale = 2;
+const updateDimensions = () =>
 {
     const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(new THREE.Vector2(2,2), camera);
     raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 0, 1), 15), dimensions);
     dimensions.divideScalar(scale);
     dimensions.ceil();
-}
+};
+updateDimensions();
 
 const material = new THREE.MeshPhongMaterial({
     color: 0x00ff00,
@@ -121,6 +123,8 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     composer.setSize(window.innerWidth, window.innerHeight);
     renderer.getSize(postShader.material.uniforms.uResolution.value);
+
+    updateDimensions();
 });
 
 
