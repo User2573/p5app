@@ -13,16 +13,13 @@ void main() {
 
     texel = mix(texel, gray*vec3(1.2, 1.0, 0.8),.5);
 
-    vec2 vignette = pow(4.*UV*(vec2(1)-UV),vec2(.5));
+    vec2 vignette = pow(4.*UV*(vec2(1)-UV),vec2(1));
     texel *= vignette.x * vignette.y;
 
     
     texel = pow(texel, vec3(1.5));
 
 
-    // vec2 coord = UV * (uResolution.x < uResolution.y ?
-    //     vec2(uResolution.x / uResolution.y, 1) :
-    //     vec2(1, uResolution.y / uResolution.x));
     float stripe = sin(50.*UV.y*(
         uResolution.x < uResolution.y ? 1. : uResolution.y / uResolution.x
     )+2.*uTime);

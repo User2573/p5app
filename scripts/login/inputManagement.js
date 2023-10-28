@@ -72,19 +72,65 @@ passwordInput.addEventListener('blur', () => updateShowPassword(false));
 /*
     SUCCESS TRANSITION
 */
-const loginSuccessAnimation = async () => {
+const loginSuccessAnimation = async (posX, posY) => {
     await loginButton.animate([
-        
         {
-            filter: 'invert(.4) brightness(2)'
+            filter: 'invert(.4) brightness(1.5)'
         }
     ],
     {
         fill: 'forwards',
         duration: 1000,
-        easing: 'cubic-bezier(.3,0,1,.7)'
+        easing: 'ease-in'
     }).finished;
+
+    const ripple1 = document.getElementById('ripple1');
+    const ripple2 = document.getElementById('ripple2');
+    const rect = loginButton.getBoundingClientRect();
+    ripple1.style.top = ripple2.style.top = (rect.top + rect.bottom) / 2 + 'px';
+    ripple1.style.left = ripple2.style.left = (rect.left + rect.right) / 2 + 'px';
+    const size = 4*Math.max(window.innerWidth, window.innerHeight)+'px';
+    await ripple1.animate([
+        {
+            width: '0',
+            height: '0',
+            opacity: '0'
+        },
+        {
+            width: size,
+            height: size,
+            opacity: '1'
+        }
+    ],
+    {
+        fill: 'forwards',
+        duration: 800,
+        easing: 'cubic-bezier(1,0,.25,1.75)'
+    }).finished;
+
+    await ripple2.animate([
+        {
+            width: '0',
+            height: '0',
+        },
+        {
+            width: size,
+            height: size,
+        }
+    ],
+    {
+        fill: 'forwards',
+        duration: 800,
+        easing: 'cubic-bezier(1,0,.25,1.75)'
+    }).finished;
+
+    window.location.href = 'app.html'
 };
+
+document.getElementsByTagName('h1')[0].onclick = () => {
+    usernameInput.value = isLoginPage ? 'adasda' : 'adasds';
+    passwordInput.value = verifyInput.value = 'asdasdasd';
+}
 
 
 
@@ -97,10 +143,7 @@ const loginSuccessAnimation = async () => {
     INPUT VALIDATION
 */
 
-const hash = x => {
-    x = Math.sin(x) * 43758.5453123;
-    return x - Math.floor(x);
-};
+
 
 const submitPreliminaries = (username, password, verify, failureCallback) => {
     if (username.length === 0) {
@@ -152,40 +195,35 @@ const submitPreliminaries = (username, password, verify, failureCallback) => {
     return true;
 }
 
-const trySubmit = (username, password, verify, successCallback, failureCallback) => {
+const trySubmit = (username, password, successCallback, failureCallback) => {
     loginButton.classList.add('waiting');
 
-    setTimeout(isLoginPage ?
-        () => {
-            loginButton.classList.remove('waiting');
-            if (Array.from(username + password)
-                    .map(c => c.charCodeAt(0))
-                    .reduce((a, b) => hash(a*b + b))
-                < .5) {
+    const hash = s => Array.from(s).map(c => c.charCodeAt(0)).reduce((a, b) => (x => x - Math.floor(x))(Math.sin(a*b + b) * 43758.5453123), 0);
+
+
+    setTimeout(() => {
+        loginButton.classList.remove('waiting')
+        if (isLoginPage) {
+            if (hash(username) >= .3 || hash(password) < .3) {
                 failureCallback('Invalid username or password.');
                 return;
             }
-            loginButton.classList.add('success');
-            successCallback();
-        } :
-        () => {
-            loginButton.classList.remove('waiting')
-            if (hash((Array.from(username)
-                    .map(c => c.charCodeAt(0))
-                    .reduce((a, b) => hash(a*b + b)))) < .3) {
+        }
+        else {
+            if (hash(username) < .3) {
                 failureCallback('Username already taken.');
                 usernameInput.focus();
                 return;
             };
-            loginButton.classList.add('success');
-            successCallback();
         }
-    , 500 + 500 * Math.random());
+        loginButton.classList.add('success');
+        successCallback();
+    }, 500 + 500 * Math.random());
 };
-
 
 loginForm.addEventListener('submit', e => {
     e.preventDefault();
+    console.log(e);
     
     const username = usernameInput.value.trim();
     const password = passwordInput.value;
@@ -198,7 +236,8 @@ loginForm.addEventListener('submit', e => {
     if (!submitPreliminaries(username, password, verify, failureCallback))
         return;
 
-    trySubmit(username, password, verify,
+    document.activeElement.blur();
+    trySubmit(username, password,
         () => {        
             errorOutput.textContent = '\u200b';
             toggleLogin.textContent = '\u200b';

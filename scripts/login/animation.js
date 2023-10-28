@@ -38,12 +38,13 @@ const scale = 2;
 const updateDimensions = () =>
 {
     const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(new THREE.Vector2(2,2), camera);
-    raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 0, 1), 15), dimensions);
+    raycaster.setFromCamera(new THREE.Vector2(1, 1), camera);
+    raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 0, 1), camera.position.z), dimensions);
     dimensions.divideScalar(scale);
     dimensions.ceil();
 };
 updateDimensions();
+dimensions.multiplyScalar(2);
 
 
 const instances = new THREE.InstancedMesh(
@@ -59,7 +60,8 @@ for (const i of Array(dimensions.x).keys()) {
         const index = i * dimensions.y + j;
         //geometry.applyQuaternion();
 
-        instances.setMatrixAt(index, new THREE.Matrix4().compose(
+        instances.setMatrixAt(index,
+            new THREE.Matrix4().compose(
                 new THREE.Vector3(
                     (i - dimensions.x/2 + .5)*scale,
                     (j - dimensions.y/2 + .5)*scale,
@@ -67,23 +69,21 @@ for (const i of Array(dimensions.x).keys()) {
                 ).add(
                     new THREE.Vector3().randomDirection().multiply(new THREE.Vector3(1, 1, 3))
                 ),
-                new THREE.Quaternion().random(),
-                new THREE.Vector3(1, 1, 1)
+                new THREE.Quaternion(), new THREE.Vector3(1, 1, 1)
             )
         );
 
         instances.setColorAt(index, new THREE.Color()
-        .setFromVector3(new THREE.Vector3()
+            .setFromVector3(new THREE.Vector3()
             .random()
             .addScalar(-.5)
             .multiplyScalar(.5)
-            .add(new THREE.Vector3(0, 1, 0))))
-
+            .add(new THREE.Vector3(0, 1, 0)))
+        );
     }
 }
 instances.instanceColor.needsUpdate = true;
 scene.add(instances);
-
 
 scene.add(new THREE.AmbientLight(0x202020));
 const directionalLight = new THREE.DirectionalLight(0xffffff, .5);
@@ -94,18 +94,19 @@ scene.add(pointLight);
 
 animator.addCallback((time, dt) => {
     for (let i = 0; i < dimensions.x * dimensions.y; i++) {
+        const position = new THREE.Vector3();
         const mat = new THREE.Matrix4();
         instances.getMatrixAt(i, mat);
-        mat.multiply(new THREE.Matrix4().makeRotationFromEuler(
-            new THREE.Euler(.2*dt, .2*dt, 0)
-        ));
-        instances.setMatrixAt(i, mat);
+        mat.decompose(position, new THREE.Quaternion(), new THREE.Vector3());
+        const hash = new THREE.Vector3(Math.sin(position.x), Math.cos(position.y), Math.tan(position.z)).normalize();
+        const rotation = new THREE.Quaternion().setFromAxisAngle(hash, hash.x + .2*time);
+        instances.setMatrixAt(i, mat.compose(position, rotation, new THREE.Vector3(1, 1, 1)));
     }
     instances.instanceMatrix.needsUpdate = true;
 
     pointLight.position.set(
-        dimensions.x*scale * Math.cos(1.9*time),
-        dimensions.y*scale * Math.sin(1.0*time),
+        dimensions.x*scale * Math.cos(.9*time),
+        dimensions.y*scale * Math.sin(.5*time),
         -5
     );
 })
@@ -136,7 +137,7 @@ const postShader = new ShaderPass({
         'uResolution' : { value: renderer.getSize(new THREE.Vector2()) }
 	},
 	vertexShader: `varying vec2 UV;void main(){UV=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1);}`,
-	fragmentShader: await (await fetch('loginBackground/postprocessing.frag')).text()
+	fragmentShader: await (await fetch('scripts/login/postprocessing.frag')).text()
 });
 composer.addPass(new RenderPass(scene, camera));
 composer.addPass(postShader);
@@ -159,7 +160,6 @@ window.addEventListener('resize', () => {
     renderer.getSize(postShader.material.uniforms.uResolution.value);
 
     updateDimensions();
-    console.log([dimensions.x, dimensions.y])
 });
 
 
@@ -169,15 +169,3 @@ window.addEventListener('resize', () => {
 
 
 animator.start();
-// function animate0() {
-//     const time = clock.getElapsedTime();
-//     postShader.material.uniforms.uTime.value = time;
-
-    
-
-    
-// 	composer.render();
-//     requestAnimationFrame(animate0);
-// }
-
-// animate0();
