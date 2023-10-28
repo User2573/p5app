@@ -10,9 +10,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--light);
     user-select: none;
     -webkit-user-select: none;
+    color: rgb(var(--light));
 }
 
 canvas {
@@ -22,25 +22,24 @@ canvas {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgb(0 0 0);
     filter: blur(2px);
 }
 
 main {    
-    background: rgba(var(--darkv) / .8);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 1rem;
-    transition: all .1s ease-in-out;
-
-    width: clamp(35rem, 40%, 50rem);
-    height: max-content;
-    padding: 5rem max(7rem, calc((clamp(35rem, 40%, 50rem) - 25rem) / 2));
-
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
     box-sizing: border-box;
+    
+    width: clamp(35rem, 40%, 50rem);
+    height: max-content;
+    padding: 5rem max(7rem, calc((clamp(35rem, 40%, 50rem) - 25rem) / 2));
+    
+    background: rgba(var(--dark) / .8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    transition: all .1s ease-in-out;
 }
 
 @media screen and (max-width: 40rem) {
@@ -64,22 +63,18 @@ h1 {
     margin: 0;
 }
 
-p {
+p#errorOutput {
     color: lightcoral;
     font-size: 1rem;
     margin: .5rem 0;
 }
 
 a {
-    color: rgb(100 120 150);
+    color: rgb(var(--midl));
 }
 
 a:hover {
     text-decoration: underline;
-}
-
-label, a {
-    opacity: .8;
 }
 
 label {
@@ -87,6 +82,7 @@ label {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
+    opacity: .8;
 }
 
 label span {
@@ -117,8 +113,7 @@ input, button {
     padding: .75rem 1.5rem;
 
     font-size: 1rem;
-    font-family: 'Inter', sans-serif;
-    color: var(--light);
+    color: rgb(var(--light));
 }
 
 input:hover, input:focus {
@@ -129,24 +124,24 @@ button:hover, button:focus {
 }
 
 input {
+    font-family: 'Inter', sans-serif;
     outline: none;
-    background: rgba(var(--midv) / .5);
+    background: rgba(var(--midd) / .5);
 }
 
 button {
-    /* for position absolute-centering success checkmark */
+    /* for position absolute-centering checkmark */
     position: relative;
-    top: 0;
-    left: 0;
-
+    
     margin-top: 2rem;
-    background: var(--high);
+    background: rgb(var(--highlight));
     text-align: center;
     font-size: 1.2rem;
     font-family: 'Libre Baskerville', serif;
 }
 
 button:is(.waiting, .success) span:is(#login-submit, #signup-submit) {
+    /* priority over login/sign up toggle */
     display: none !important;
 }
 
@@ -158,21 +153,21 @@ button.waiting span.login-ellipsis {
     background: rgba(255 255 255 / .5);
 }
 
-button.success span#login-success::before {
+span#login-success {    
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    
-    content: '\e876';
     font-size: 3rem;
     font-family: 'Material Symbols Outlined';
 }
 
+button:not(.success) span#login-success {
+    visibility: hidden;
+}
+
 #ripple1, #ripple2 {
     position: fixed;
-    top: 50%;
-    left: 50%;
     transform: translate(-50%, -50%);
     
     display: inline-block;
@@ -180,7 +175,7 @@ button.success span#login-success::before {
 }
 
 #ripple1 {
-    background: var(--light);
+    background: rgb(var(--light));
 }
 
 #ripple2 {

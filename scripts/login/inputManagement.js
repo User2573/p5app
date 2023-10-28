@@ -72,7 +72,7 @@ passwordInput.addEventListener('blur', () => updateShowPassword(false));
 /*
     SUCCESS TRANSITION
 */
-const loginSuccessAnimation = async (posX, posY) => {
+const loginSuccessAnimation = async (posX, posY) => new Promise(async resolve => {
     await loginButton.animate([
         {
             filter: 'invert(.4) brightness(1.5)'
@@ -123,9 +123,8 @@ const loginSuccessAnimation = async (posX, posY) => {
         duration: 800,
         easing: 'cubic-bezier(1,0,.25,1.75)'
     }).finished;
-
-    window.location.href = 'app.html'
-};
+    resolve();
+});
 
 document.getElementsByTagName('h1')[0].onclick = () => {
     usernameInput.value = isLoginPage ? 'adasda' : 'adasds';
@@ -238,12 +237,14 @@ loginForm.addEventListener('submit', e => {
 
     document.activeElement.blur();
     trySubmit(username, password,
-        () => {        
+        async () => {        
             errorOutput.textContent = '\u200b';
             toggleLogin.textContent = '\u200b';
             usernameInput.disabled = true;
             passwordInput.disabled = true;
             verifyInput.disabled = true;
-            setTimeout(loginSuccessAnimation, 300);
+            await new Promise(resolve => setTimeout(resolve, 300));
+            await loginSuccessAnimation();
+            window.location.href = `app.html?username=${username}`
         }, failureCallback);
 })
