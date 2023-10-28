@@ -1,5 +1,8 @@
-make labels pseudo elements & put the show password inside input
+bg animation light movement
+    resizing window causes break
+    because it's a dynamic simulation with dt
+    convert to function of time
 
-add cool button animation/transition to success page
-
-make better bg
+window height or width too small
+    both scrollbars appear
+    fix !! !!

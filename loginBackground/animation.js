@@ -1,8 +1,29 @@
 import * as THREE from 'three';
-import { Animator } from './animator.js';
 
+const animator = new (class Animator {
+    #clock = new THREE.Clock(false);
+    #callbacks = [];
 
-const animator = new Animator();
+    #animate() {
+        // dt before time since getElapsedTime resets delta counter
+        const dt = this.#clock.getDelta();
+        const time = this.#clock.getElapsedTime();
+        for (const callback of this.#callbacks) {
+            callback(time, dt);
+        }
+        requestAnimationFrame(() => this.#animate());
+    }
+
+    addCallback(callback) {
+        this.#callbacks.push(callback);
+    }
+
+    start() {
+        this.#clock.start();
+        this.#animate();
+    }
+})();
+
 
 
 
@@ -13,7 +34,7 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.inner
 camera.position.z = 15;
 
 const dimensions = new THREE.Vector3();
-const scale = 3;
+const scale = 2;
 const updateDimensions = () =>
 {
     const raycaster = new THREE.Raycaster();
@@ -115,7 +136,7 @@ const postShader = new ShaderPass({
         'uResolution' : { value: renderer.getSize(new THREE.Vector2()) }
 	},
 	vertexShader: `varying vec2 UV;void main(){UV=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1);}`,
-	fragmentShader: await (await fetch('postprocessing-login.frag')).text()
+	fragmentShader: await (await fetch('loginBackground/postprocessing.frag')).text()
 });
 composer.addPass(new RenderPass(scene, camera));
 composer.addPass(postShader);
@@ -138,6 +159,7 @@ window.addEventListener('resize', () => {
     renderer.getSize(postShader.material.uniforms.uResolution.value);
 
     updateDimensions();
+    console.log([dimensions.x, dimensions.y])
 });
 
 
