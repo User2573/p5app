@@ -37,7 +37,8 @@ window.addEventListener('DOMContentLoaded', async () => {
         await child.animate(
             {
                 top: [childT+'px', destT+'px'],
-                left: [childL+'px', destL+'px']
+                left: [childL+'px', destL+'px'],
+                //'font-size': ['2em', '1.5em']
             },
             {
                 duration: 1000,

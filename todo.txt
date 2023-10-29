@@ -6,3 +6,5 @@ bg animation light movement
 window height or width too small
     both scrollbars appear
     fix !! !!
+
+find out how to animate font size for app
