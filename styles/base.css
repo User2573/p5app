@@ -1,12 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;400;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
 
 :root {
+    --black: 7 7 10;
     --dark: 21 20 36;
-    --midd: 64 62 81;
-    --midl: 100 120 150;
+    --midd: 43 41 59;
+    --midm: 64 62 81;
+    --midl: 140 140 190;
     --light: 205 203 214;
     --highlight: 117 75 1;
     
+
+}
+
+body {
+    user-select: none;
+    -webkit-user-select: none;
     font-family: 'Libre Baskerville', serif;
     color: rgb(var(--light));
 }

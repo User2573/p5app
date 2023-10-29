@@ -73,16 +73,16 @@ passwordInput.addEventListener('blur', () => updateShowPassword(false));
     SUCCESS TRANSITION
 */
 const loginSuccessAnimation = async (posX, posY) => new Promise(async resolve => {
-    await loginButton.animate([
+    await loginButton.animate(
         {
-            filter: 'invert(.4) brightness(1.5)'
+            filter: ['invert(.4) brightness(2)']
+        },
+        {
+            fill: 'forwards',
+            duration: 500,
+            easing: 'ease-in'
         }
-    ],
-    {
-        fill: 'forwards',
-        duration: 1000,
-        easing: 'ease-in'
-    }).finished;
+    ).finished;
 
     const ripple1 = document.getElementById('ripple1');
     const ripple2 = document.getElementById('ripple2');
@@ -90,45 +90,28 @@ const loginSuccessAnimation = async (posX, posY) => new Promise(async resolve =>
     ripple1.style.top = ripple2.style.top = (rect.top + rect.bottom) / 2 + 'px';
     ripple1.style.left = ripple2.style.left = (rect.left + rect.right) / 2 + 'px';
     const size = 4*Math.max(window.innerWidth, window.innerHeight)+'px';
-    await ripple1.animate([
-        {
-            width: '0',
-            height: '0',
-            opacity: '0'
-        },
-        {
-            width: size,
-            height: size,
-            opacity: '1'
-        }
-    ],
-    {
-        fill: 'forwards',
-        duration: 800,
-        easing: 'cubic-bezier(1,0,.25,1.75)'
-    }).finished;
+    for (const [ripple, opacity] of [[ripple1, 0], [ripple2, 1]]) {
+        console.log(ripple);
+        await ripple.animate(
+            {
+                width: [0, size],
+                height: [0, size],
+                opacity: [opacity, 1]
+            },
+            {
+                fill: 'forwards',
+                duration: 500,
+                easing: 'cubic-bezier(1,0,.25,1.75)'
+            }
+        ).finished;
+    }
 
-    await ripple2.animate([
-        {
-            width: '0',
-            height: '0',
-        },
-        {
-            width: size,
-            height: size,
-        }
-    ],
-    {
-        fill: 'forwards',
-        duration: 800,
-        easing: 'cubic-bezier(1,0,.25,1.75)'
-    }).finished;
     resolve();
 });
 
 document.getElementsByTagName('h1')[0].onclick = () => {
     usernameInput.value = isLoginPage ? 'adasda' : 'adasds';
-    passwordInput.value = verifyInput.value = 'asdasdasd';
+    passwordInput.value = verifyInput.value = 'abfhd3fgh';
 }
 
 
@@ -243,8 +226,9 @@ loginForm.addEventListener('submit', e => {
             usernameInput.disabled = true;
             passwordInput.disabled = true;
             verifyInput.disabled = true;
-            await new Promise(resolve => setTimeout(resolve, 300));
+            await new Promise(resolve => setTimeout(resolve, 800));
             await loginSuccessAnimation();
-            window.location.href = `app.html?username=${username}`
+            sessionStorage.setItem('username', username);
+            window.location.href = 'app.html';
         }, failureCallback);
 })

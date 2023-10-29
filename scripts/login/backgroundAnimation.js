@@ -137,7 +137,7 @@ const postShader = new ShaderPass({
         'uResolution' : { value: renderer.getSize(new THREE.Vector2()) }
 	},
 	vertexShader: `varying vec2 UV;void main(){UV=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1);}`,
-	fragmentShader: await (await fetch('scripts/login/postprocessing.frag')).text()
+	fragmentShader: await (await fetch('scripts/login/backgroundPostprocessing.frag')).text()
 });
 composer.addPass(new RenderPass(scene, camera));
 composer.addPass(postShader);

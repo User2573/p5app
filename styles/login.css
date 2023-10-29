@@ -10,8 +10,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    user-select: none;
-    -webkit-user-select: none;
     color: rgb(var(--light));
 }
 
@@ -63,7 +61,7 @@ h1 {
     margin: 0;
 }
 
-p#errorOutput {
+p#error {
     color: lightcoral;
     font-size: 1rem;
     margin: .5rem 0;
