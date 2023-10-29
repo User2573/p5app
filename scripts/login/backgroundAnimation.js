@@ -1,35 +1,7 @@
 import * as THREE from 'three';
+import { Animator } from '../animator.js'
 
-const animator = new (class Animator {
-    #clock = new THREE.Clock(false);
-    #callbacks = [];
-
-    #animate() {
-        // dt before time since getElapsedTime resets delta counter
-        const dt = this.#clock.getDelta();
-        const time = this.#clock.getElapsedTime();
-        for (const callback of this.#callbacks) {
-            callback(time, dt);
-        }
-
-        if (this.#clock.running) {
-            requestAnimationFrame(() => this.#animate());
-        }
-    }
-
-    addCallback(callback) {
-        this.#callbacks.push(callback);
-    }
-
-    start() {
-        this.#clock.start();
-        this.#animate();
-    }
-
-    stop() {
-        this.#clock.stop();
-    }
-})();
+const animator = new Animator();
 
 export const stopAnimation = () => animator.stop();
 

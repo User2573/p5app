@@ -8,6 +8,8 @@ body, html {
 
 body {
     background: rgb(var(--black)) !important;
+    display: flex;
+    flex-flow: column nowrap;
 }
 
 div#animation {
@@ -40,7 +42,7 @@ nav img#icon {
 
 hr {
     margin: 0 10px;
-    border: 2px solid rgba(var(--dark));
+    border: 2px solid rgba(var(--midd) / .5);
     border-radius: 10px;
 }
 
@@ -52,7 +54,7 @@ nav div {
     flex-grow: 1;
     display: flex;
     flex-flow: row nowrap;
-    justify-content: space-between;
+    justify-content: right;
 }
 
 nav h1 {
@@ -61,16 +63,36 @@ nav h1 {
     display: flex;
 }
 
-nav a#back {
+nav a {
+    font-family: 'Inter', sans-serif;
     color: rgb(var(--midl));
     height: 100%;
-    padding: 0 2rem;
+    padding: 0 min(2rem, 10%);
     text-align: center;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
 }
 
-nav a#back:hover {
+@media screen and (max-width: 30em) {
+    nav a#reload {
+        display: none;
+    }
+}
+
+nav a:hover {
     text-decoration: underline;
+}
+
+div#container {
+    overflow: hidden;
+    box-sizing: border-box;
+    height: 100%;
+    margin: 3rem;
+}
+
+canvas {
+    border-radius: 50px;
+    box-sizing: border-box;
+    /* border: 4px solid rgba(var(--midd) / .5); */
 }

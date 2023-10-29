@@ -7,12 +7,11 @@ window.addEventListener('DOMContentLoaded', async () => {
         window.location.replace('login.html');
     }
 
-    if (animationPlayed) {
+    if (!animationPlayed) {
         sessionStorage.setItem('played', true);
         const welcomeMessage = document.getElementById('animation-welcome');
         const newParent = document.getElementById('username-display');
         
-        sessionStorage.setItem('played', true);
         await new Promise(resolve => setTimeout(resolve, 200));
         
         welcomeMessage.style.opacity = 0;
@@ -68,12 +67,9 @@ window.addEventListener('DOMContentLoaded', async () => {
         child.style.position = 'unset';
         outerHeading.remove();
     }
+    else {
+        document.getElementById('username-display').textContent = username;
+    }
 
     animationBox.remove();
-})
-
-
-document.getElementById('back').addEventListener('click', () => {
-    sessionStorage.removeItem('played');
-    window.location.href = 'index.html';
 });

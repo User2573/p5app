@@ -6,8 +6,21 @@
     <link rel="icon" type="image/png" href="assets/favicon-transparent.png" />
     <title>Document</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.157.0/build/three.module.min.js",
+            "three/addons/": "https://unpkg.com/three@0.157.0/examples/jsm/"
+        }
+    }
+    </script>
+
     <link rel="stylesheet" href="styles/app.css" />
-    <script type="module" src="scripts/app/main.js"></script>
+    <script type="module" src="scripts/app/loadAnimation.js"></script>
+    <script type="module" src="scripts/app/inputManagement.js"></script>
+    <script type="module" src="scripts/app/app.js"></script>
 </head>
 <body style="background: black">
     <div id="animation">
@@ -18,12 +31,15 @@
     <nav>
         <img id="icon" src="assets/icon-transparent-512.png"></img>
         <hr />
+        <h1 id="username-display">&nbsp;</h1>
         <div>
-            <h1 id="username-display">&nbsp;</h1>
+            <a id="reload">Replay</a>
             <a id="back">Back</a>
         </div>
     </nav>
     <hr />
-    <canvas id="canv"></canvas>
+    <div id="container">
+        <canvas></canvas>
+    </div>
 </body>
 </html>

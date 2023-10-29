@@ -124,7 +124,7 @@ button:hover, button:focus {
 input {
     font-family: 'Inter', sans-serif;
     outline: none;
-    background: rgba(var(--midd) / .5);
+    background: rgba(var(--midm) / .5);
 }
 
 button {
