@@ -8,6 +8,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (animationPlayed) {
+        sessionStorage.setItem('played', true);
         const welcomeMessage = document.getElementById('animation-welcome');
         const newParent = document.getElementById('username-display');
         
@@ -38,7 +39,7 @@ window.addEventListener('DOMContentLoaded', async () => {
             {
                 top: [childT+'px', destT+'px'],
                 left: [childL+'px', destL+'px'],
-                //'font-size': ['2em', '1.5em']
+                fontSize: ['2rem', '1.5rem']
             },
             {
                 duration: 1000,

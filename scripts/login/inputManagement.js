@@ -50,7 +50,7 @@ toggleLogin.addEventListener('click', () => {
 */
 const toggleShowPassword = document.getElementById('showpw');
 let show = false;
-const updateShowPassword = s =>  {
+const updateShowPassword = s => {
     show = s;
     toggleShowPassword.style.opacity = show ? '1' : '.6';
     toggleShowPassword.textContent = show ? '\ue8f4' : '\ue8f5';
@@ -91,7 +91,6 @@ const loginSuccessAnimation = async (posX, posY) => new Promise(async resolve =>
     ripple1.style.left = ripple2.style.left = (rect.left + rect.right) / 2 + 'px';
     const size = 4*Math.max(window.innerWidth, window.innerHeight)+'px';
     for (const [ripple, opacity] of [[ripple1, 0], [ripple2, 1]]) {
-        console.log(ripple);
         await ripple.animate(
             {
                 width: [0, size],
@@ -109,10 +108,11 @@ const loginSuccessAnimation = async (posX, posY) => new Promise(async resolve =>
     resolve();
 });
 
-document.getElementsByTagName('h1')[0].onclick = () => {
+const header = document.getElementsByTagName('h1')[0];
+header.addEventListener('click', () => {
     usernameInput.value = isLoginPage ? 'adasda' : 'adasds';
     passwordInput.value = verifyInput.value = 'abfhd3fgh';
-}
+});
 
 
 
@@ -203,29 +203,36 @@ const trySubmit = (username, password, successCallback, failureCallback) => {
     }, 500 + 500 * Math.random());
 };
 
+import { stopAnimation } from './backgroundAnimation.js';
+let processingSubmit = false;
 loginForm.addEventListener('submit', e => {
     e.preventDefault();
-    console.log(e);
+    if (processingSubmit) return;
     
     const username = usernameInput.value.trim();
     const password = passwordInput.value;
     const verify = verifyInput.value;
 
     const failureCallback = err => {
+        processingSubmit = false;
         errorOutput.textContent = err;
     };
 
     if (!submitPreliminaries(username, password, verify, failureCallback))
         return;
 
+    processingSubmit = true;
     document.activeElement.blur();
     trySubmit(username, password,
-        async () => {        
+        async () => {
             errorOutput.textContent = '\u200b';
             toggleLogin.textContent = '\u200b';
             usernameInput.disabled = true;
             passwordInput.disabled = true;
             verifyInput.disabled = true;
+            header.onclick = () => {};
+            loginForm.onsubmit = () => {};
+            stopAnimation();
             await new Promise(resolve => setTimeout(resolve, 800));
             await loginSuccessAnimation();
             sessionStorage.setItem('username', username);

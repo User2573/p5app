@@ -11,7 +11,10 @@ const animator = new (class Animator {
         for (const callback of this.#callbacks) {
             callback(time, dt);
         }
-        requestAnimationFrame(() => this.#animate());
+
+        if (this.#clock.running) {
+            requestAnimationFrame(() => this.#animate());
+        }
     }
 
     addCallback(callback) {
@@ -22,7 +25,14 @@ const animator = new (class Animator {
         this.#clock.start();
         this.#animate();
     }
+
+    stop() {
+        this.#clock.stop();
+    }
 })();
+
+export const stopAnimation = () => animator.stop();
+
 
 
 
