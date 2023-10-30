@@ -1,5 +1,7 @@
 @import url('./base.css');
 
+
+
 body, html {
     height: 100%;
     margin: 0;
@@ -30,9 +32,8 @@ main {
     box-sizing: border-box;
     
     width: clamp(35rem, 40%, 50rem);
-    height: max-content;
     padding: 5rem max(7rem, calc((clamp(35rem, 40%, 50rem) - 25rem) / 2));
-    
+
     background: rgb(var(--dark) / .8);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
