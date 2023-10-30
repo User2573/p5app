@@ -42,7 +42,7 @@ nav img#icon {
 
 hr {
     margin: 0 10px;
-    border: 2px solid rgba(var(--midd) / .5);
+    border: 2px solid rgb(var(--midd) / .5);
     border-radius: 10px;
 }
 
@@ -95,5 +95,5 @@ canvas {
     border-radius: 50px;
     /* these values will be read once by the shader and futher modification is useless */
     --border-width: 4px;
-    --border-color: rgba(var(--midd) / .5);
+    --border-color: rgb(var(--midd) / .5);
 }
