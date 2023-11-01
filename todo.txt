@@ -1,7 +1,8 @@
-bg animation light movement
-    resizing window causes break
-    because it's a dynamic simulation with dt
-    convert to function of time
+app background trails
+    make every trail move at same speed
+    => outer trails slower
+
+
 
 window height or width too small
     both scrollbars appear

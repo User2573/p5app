@@ -17,6 +17,12 @@ void main() {
     
 
 
+    float dist2 = dot(texelPos - uMouse, texelPos - uMouse);
+    float mouseHighlight = sin(exp(-dist2/pow(70., 2.)));
+    texel = mix(texel, vec3(texel.x+texel.y+texel.z)/3., mouseHighlight);
+    texel *= 1. + 5.*mouseHighlight;
+
+
     // border
     vec2 q = abs(texelPos-uCorner-uDimensions/2.)-uDimensions/2.+uBorderRadius;
     float borderDist = uBorderRadius - min(max(q.x,q.y),0.0) - length(max(q,0.0));
@@ -27,10 +33,6 @@ void main() {
     float alpha = 1.;
     texel = mix(texel, mix(texel, uBorderColor.xyz, uBorderColor.w), inBorder);
 
-
-    float dist2 = dot(texelPos - uMouse, texelPos - uMouse);
-    float mouseHighlight = sin(exp(-dist2/pow(50., 2.)));
-    texel *= 1.+5.*mouseHighlight;
     mouseHighlight *= .005;
     mouseHighlight = mix(0., pow(mouseHighlight, .3), inBorder);
     texel += vec3(mouseHighlight);

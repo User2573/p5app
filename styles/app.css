@@ -92,6 +92,7 @@ div#container {
 }
 
 canvas {
+    background: var(--black);
     border-radius: 50px;
     /* these values will be read once by the shader and futher modification is useless */
     --border-width: 4px;

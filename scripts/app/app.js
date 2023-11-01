@@ -15,12 +15,22 @@ scene.background = new THREE.Color('rgb(7, 7, 10)');
 
 
 
+
 class Trail {
     constructor(points, color) {
         this.points = points;
         this.mesh = new THREE.Line(
-            new THREE.BufferGeometry().setFromPoints(points),
-            new THREE.LineBasicMaterial({ color: color.getHex() })
+            new THREE.BufferGeometry()
+                .setAttribute('position', new THREE.BufferAttribute(
+                    new Float32Array(points.flatMap(p => [p.x, p.y, p.z]))
+                ).setUsage(THREE.StreamDrawUsage))
+                .setAttribute('color', new THREE.BufferAttribute(
+                    new Float32Array(Array(points.length).fill(0).map((x, i) => {
+                        const t = i / points.length;
+                        return color.clone().lerp(scene.background, t*(2-t));
+                    }).flatMap(c => [c.r, c.g, c.b])),
+                3)),
+            new THREE.LineBasicMaterial({ vertexColors: true })
         );
         this.mesh.frustumCulled = false;
     }
@@ -36,13 +46,17 @@ const axis = () => new THREE.Vector3(1, 2, 3).normalize();
 const lines = [];
 const balls = [];
 
-for (let i = 0; i < 100; i++) {
-    const point = new THREE.Vector3().randomDirection().setLength((x => .5+10*x)(Math.random()));
+for (let i = 0; i < 30; i++) {
+    const point = new THREE.Vector3().randomDirection().setLength(Math.sqrt(Math.random()));
+    const axisToPoint = point.clone().sub(point.clone().projectOnVector(axis())).normalize();
+    point.add(axisToPoint.multiplyScalar(.05));
+    point.multiplyScalar(10);
+
     const closestPoint = new THREE.Vector3();
     new THREE.Line3(axis()).closestPointToPoint(point, false, closestPoint)
     const n = 10+Math.floor(20*closestPoint.sub(point).length());
     const points = Array(n).fill(0).map(() => point.clone());
-    const color = new THREE.Color(.2, .3, .6).add(new THREE.Color().setFromVector3(new THREE.Vector3().random().multiplyScalar(.2)).multiplyScalar(Math.random()));
+    const color = new THREE.Color(.2, .3, .6).add(new THREE.Color().setFromVector3(new THREE.Vector3().random().addScalar(-.8).multiplyScalar(.2)).multiplyScalar(Math.random()));
     const line = new Trail(points, color);
     scene.add(line.mesh);
     lines.push(line);
@@ -50,18 +64,20 @@ for (let i = 0; i < 100; i++) {
 
 
 
-animator.addCallback((time, dt) => {
+animator.addCallback(time => {
     camera.position.set(Math.cos(time/8), 0, Math.sin(time/8)).multiplyScalar(15);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
-
-
-
+    
+    
+    
     for (const line of lines) {
         const point = line.points[0];
-        const dir = point.clone().cross(axis()).normalize();
-        line.addPoint(point.clone().add(dir.multiplyScalar(.05)));
-        line.points[0].setLength(point.length());
+        const dist2 = point.distanceToSquared(point.clone().projectOnVector(axis()));
+        const speed = Math.pow(dist2, -.25);
+        const newPoint = point.clone().applyAxisAngle(axis(), .1*speed);
+        line.addPoint(newPoint);
     }
+    return;
 })
 
 
