@@ -20,7 +20,7 @@ void main() {
     float dist2 = dot(texelPos - uMouse, texelPos - uMouse);
     float mouseHighlight = sin(exp(-dist2/pow(70., 2.)));
     texel = mix(texel, vec3(texel.x+texel.y+texel.z)/3., mouseHighlight);
-    texel *= 1. + 5.*mouseHighlight;
+    texel *= 1. + mouseHighlight*(1.5 + 8.*length(texel));
 
 
     // border
@@ -34,7 +34,7 @@ void main() {
     texel = mix(texel, mix(texel, uBorderColor.xyz, uBorderColor.w), inBorder);
 
     mouseHighlight *= .005;
-    mouseHighlight = mix(0., pow(mouseHighlight, .3), inBorder);
+    mouseHighlight = mix(0., pow(mouseHighlight, .5), inBorder);
     texel += vec3(mouseHighlight);
 
 

@@ -1,3 +1,5 @@
+import { startAnimation } from "./app.js";
+
 const username = sessionStorage.getItem('username');
 const animationPlayed = sessionStorage.getItem('played');
 const animationBox = document.getElementById('animation');
@@ -69,5 +71,7 @@ if (!animationPlayed) {
 else {
     document.getElementById('username-display').textContent = username;
 }
+
+startAnimation();
 
 animationBox.remove();
