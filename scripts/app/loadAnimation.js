@@ -1,4 +1,4 @@
-import { startAnimation } from "./app.js";
+import { startAnimation } from './app.js';
 
 const username = sessionStorage.getItem('username');
 const animationPlayed = sessionStorage.getItem('played');

@@ -1,6 +1,7 @@
 uniform sampler2D tDiffuse;
 uniform float uTime;
 uniform vec2 uResolution;
+uniform bool uBackground;
 varying vec2 UV;
 
 
@@ -25,6 +26,11 @@ void main() {
     )+2.*uTime);
     stripe *= stripe * stripe;
     texel *= 1.8+stripe;
+
+
+    if (uBackground) {
+        texel += vec3(.5);
+    }
 
 
     gl_FragColor = vec4(texel, 1);

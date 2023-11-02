@@ -100,7 +100,7 @@ label:not(:has(+input:hover, +input:focus)) span {
     visibility: hidden;
 }
 
-input, button {
+input, button#login {
     --outline-width: 1px;
     all: unset;
     display: block;
@@ -117,7 +117,7 @@ input, button {
 input:hover, input:focus {
     --outline-width: 2px;
 }
-button:hover, button:focus {
+button#login:hover, button#login:focus {
     --outline-width: 3px;
 }
 
@@ -127,7 +127,7 @@ input {
     background: rgb(var(--midm) / .5);
 }
 
-button {
+button#login {
     /* for position absolute-centering checkmark */
     position: relative;
     

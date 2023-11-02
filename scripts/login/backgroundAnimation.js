@@ -4,7 +4,7 @@ import { Animator } from '../animator.js'
 const animator = new Animator();
 
 export const stopAnimation = () => animator.stop();
-
+export const toggleStats = () => animator.toggleStats();
 
 
 
@@ -116,7 +116,8 @@ const postShader = new ShaderPass({
 	uniforms: {
 		'tDiffuse': { value: null },
         'uTime': { value: 0 },
-        'uResolution' : { value: renderer.getSize(new THREE.Vector2()) }
+        'uResolution' : { value: renderer.getSize(new THREE.Vector2()) },
+        'uBackground' : { value: false }
 	},
 	vertexShader: `varying vec2 UV;void main(){UV=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1);}`,
 	fragmentShader: await (await fetch('scripts/login/backgroundPostprocessing.frag')).text()
@@ -129,6 +130,10 @@ animator.addCallback(time => {
     postShader.material.uniforms.uTime.value = time;
     composer.render();
 });
+
+export const toggleBackgroundSecret = () => {
+    postShader.material.uniforms.uBackground.value = !postShader.material.uniforms.uBackground.value;
+};
 
 
 

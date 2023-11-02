@@ -2,7 +2,7 @@ const loginButton = document.getElementById('login');
 const loginForm = document.getElementById('form');
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
-const verifyInput = document.getElementById('vpassword')
+const confirmInput = document.getElementById('cpassword')
 const errorOutput = document.getElementById('error');
 
 
@@ -23,7 +23,7 @@ let isLoginPage = false;
 const toggleLogin = document.getElementById('togglelogin');
 const loginHeader = document.getElementById('login-header');
 const signupHeader = document.getElementById('signup-header');
-const verifySection = document.getElementById('signup-verify');
+const confirmSection = document.getElementById('signup-confirm');
 const loginSubmit = document.getElementById('login-submit');
 const signupSubmit = document.getElementById('signup-submit');
 const setLoginPage = state => {
@@ -31,7 +31,7 @@ const setLoginPage = state => {
     toggleLogin.textContent = isLoginPage ? 'Sign up instead' : 'Log in instead'
     loginHeader.style.display = isLoginPage ? 'unset' : 'none';
     signupHeader.style.display = isLoginPage ? 'none' : 'unset';
-    verifySection.style.display = isLoginPage ? 'none' : 'unset';
+    confirmSection.style.display = isLoginPage ? 'none' : 'unset';
     loginSubmit.style.display = isLoginPage ? 'unset' : 'none';
     signupSubmit.style.display = isLoginPage ? 'none' : 'unset';
 }
@@ -108,12 +108,6 @@ const loginSuccessAnimation = async (posX, posY) => new Promise(async resolve =>
     resolve();
 });
 
-const header = document.getElementsByTagName('h1')[0];
-header.addEventListener('click', () => {
-    usernameInput.value = isLoginPage ? 'adasda' : 'adasds';
-    passwordInput.value = verifyInput.value = 'abfhd3fgh';
-});
-
 
 
 
@@ -125,9 +119,10 @@ header.addEventListener('click', () => {
     INPUT VALIDATION
 */
 
+import { secret } from '/assets/favicon-code.js';
+secret({ isLoginPage, usernameInput, passwordInput, confirmInput });
 
-
-const submitPreliminaries = (username, password, verify, failureCallback) => {
+const submitPreliminaries = (username, password, confirm, failureCallback) => {
     if (username.length === 0) {
         usernameInput.focus();
         errorOutput.textContent = '\u200b';
@@ -163,14 +158,14 @@ const submitPreliminaries = (username, password, verify, failureCallback) => {
     if (isLoginPage)
         return true;
 
-    if (verify.length === 0) {
-        verifyInput.focus();
+    if (confirm.length === 0) {
+        confirmInput.focus();
         errorOutput.textContent = '\u200b';
         return false;
     }
-    if (verify !== password) {
+    if (confirm !== password) {
         failureCallback('Password mismatch.')
-        verifyInput.value = '';
+        confirmInput.value = '';
         return false;
     }
 
@@ -211,14 +206,14 @@ loginForm.addEventListener('submit', e => {
     
     const username = usernameInput.value.trim();
     const password = passwordInput.value;
-    const verify = verifyInput.value;
+    const confirm = confirmInput.value;
 
     const failureCallback = err => {
         processingSubmit = false;
         errorOutput.textContent = err;
     };
 
-    if (!submitPreliminaries(username, password, verify, failureCallback))
+    if (!submitPreliminaries(username, password, confirm, failureCallback))
         return;
 
     processingSubmit = true;
@@ -229,7 +224,7 @@ loginForm.addEventListener('submit', e => {
             toggleLogin.textContent = '\u200b';
             usernameInput.disabled = true;
             passwordInput.disabled = true;
-            verifyInput.disabled = true;
+            confirmInput.disabled = true;
             header.onclick = () => {};
             loginForm.onsubmit = () => {};
             stopAnimation();
