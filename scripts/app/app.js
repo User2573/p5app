@@ -18,6 +18,7 @@ scene.background = new THREE.Color('rgb(7, 7, 10)');
 
 class Trail {
     constructor(points, color) {
+        console.log('constructing');
         this.points = points;
         this.mesh = new THREE.Line(
             new THREE.BufferGeometry()
@@ -25,12 +26,15 @@ class Trail {
                     new Float32Array(points.flatMap(p => [p.x, p.y, p.z]))
                 ).setUsage(THREE.StreamDrawUsage))
                 .setAttribute('color', new THREE.BufferAttribute(
-                    new Float32Array(Array(points.length).fill(0).map((x, i) => {
+                    new Float32Array(Array.from({ length: points.length }, (x, i) => {
                         const t = i / points.length;
-                        return color.clone().lerp(scene.background, t*(2-t));
-                    }).flatMap(c => [c.r, c.g, c.b])),
-                3)),
-            new THREE.LineBasicMaterial({ vertexColors: true })
+                        return 1-t*(2-t);
+                    }).flatMap(a => [color.r, color.g, color.b, a])),
+                4)),
+            new THREE.LineBasicMaterial({
+                vertexColors: true,
+                transparent: true
+            })
         );
         this.mesh.frustumCulled = false;
     }
@@ -46,6 +50,7 @@ const axis = () => new THREE.Vector3(1, 2, 3).normalize();
 const lines = [];
 const balls = [];
 
+let j=0;
 for (let i = 0; i < 30; i++) {
     const point = new THREE.Vector3().randomDirection().setLength(Math.sqrt(Math.random()));
     const axisToPoint = point.clone().sub(point.clone().projectOnVector(axis())).normalize();
@@ -55,12 +60,15 @@ for (let i = 0; i < 30; i++) {
     const closestPoint = new THREE.Vector3();
     new THREE.Line3(axis()).closestPointToPoint(point, false, closestPoint)
     const n = 10+Math.floor(20*closestPoint.sub(point).length());
-    const points = Array(n).fill(0).map(() => point.clone());
+    j+=n;
+    const points = Array(80).fill(0).map(() => point.clone());
     const color = new THREE.Color(.2, .3, .6).add(new THREE.Color().setFromVector3(new THREE.Vector3().random().addScalar(-.8).multiplyScalar(.2)).multiplyScalar(Math.random()));
     const line = new Trail(points, color);
     scene.add(line.mesh);
     lines.push(line);
 }
+j/=lines.length;
+console.log(j);
 
 
 
