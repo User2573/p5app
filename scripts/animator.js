@@ -1,10 +1,19 @@
 import { Clock } from 'three';
+import Stats from 'three/addons/libs/stats.module.js'
 
 export class Animator {
+    #stats = new Stats();
     #clock = new Clock(false);
     #callbacks = [];
 
+    constructor() {
+        this.#stats.dom.id = 'stats';
+        document.body.appendChild(this.#stats.dom);
+    }
+
     #animate() {
+        this.#stats.begin();
+        
         // dt before time since getElapsedTime resets delta counter
         const dt = this.#clock.getDelta();
         const time = this.#clock.getElapsedTime();
@@ -15,6 +24,8 @@ export class Animator {
         if (this.#clock.running) {
             requestAnimationFrame(() => this.#animate());
         }
+
+        this.#stats.end();
     }
 
     addCallback(callback) {

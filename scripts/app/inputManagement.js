@@ -1,5 +1,4 @@
 document.getElementById('back').addEventListener('click', () => {
-    sessionStorage.removeItem('played');
     window.location.href = 'index.html';
 });
 

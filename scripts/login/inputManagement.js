@@ -235,6 +235,7 @@ loginForm.addEventListener('submit', e => {
             stopAnimation();
             await new Promise(resolve => setTimeout(resolve, 800));
             await loginSuccessAnimation();
+            sessionStorage.removeItem('played');
             sessionStorage.setItem('username', username);
             window.location.href = 'app.html';
         }, failureCallback);

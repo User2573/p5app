@@ -107,7 +107,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 
 const renderer = new THREE.WebGLRenderer();
-renderer.setPixelRatio(1);
+renderer.setPixelRatio(.3);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 

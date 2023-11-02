@@ -112,7 +112,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 
 const composer = new EffectComposer(renderer);
-const computedStyle = getComputedStyle(document.getElementsByTagName('canvas')[0]);
+const computedStyle = getComputedStyle(renderer.domElement);
 const borderColorComponents = computedStyle.getPropertyValue('--border-color').match(/[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)/g).map((n, i) => parseFloat(n) / (i == 3 ? 1 : 255));
 const borderColor = new THREE.Color(...borderColorComponents).convertSRGBToLinear();
 const highlightShader = new ShaderPass({
