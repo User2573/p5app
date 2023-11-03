@@ -29,31 +29,32 @@ updateDimensions();
 dimensions.multiplyScalar(2);
 
 
+const positions = Array(dimensions.x * dimensions.y).fill(0);
 const instances = new THREE.InstancedMesh(
     new THREE.BoxGeometry(1, 1, 1),
     new THREE.MeshPhongMaterial({
         color: 0xffffff,
         shininess: 200
     }),
-    dimensions.x * dimensions.y
+    positions.length
 );
 for (const i of Array(dimensions.x).keys()) {
     for (const j of Array(dimensions.y).keys()) {
         const index = i * dimensions.y + j;
-        //geometry.applyQuaternion();
-
-        instances.setMatrixAt(index,
-            new THREE.Matrix4().compose(
-                new THREE.Vector3(
-                    (i - dimensions.x/2 + .5)*scale,
-                    (j - dimensions.y/2 + .5)*scale,
-                    0
-                ).add(
-                    new THREE.Vector3().randomDirection().multiply(new THREE.Vector3(1, 1, 3))
-                ),
-                new THREE.Quaternion(), new THREE.Vector3(1, 1, 1)
-            )
+        
+        positions[index] = new THREE.Vector3(
+            (i - dimensions.x/2 + .5)*scale,
+            (j - dimensions.y/2 + .5)*scale,
+            0
+        ).add(
+            new THREE.Vector3().randomDirection().multiply(new THREE.Vector3(1, 1, 3))
         );
+
+        instances.setMatrixAt(index, new THREE.Matrix4().compose(
+            positions[index],
+            new THREE.Quaternion(),
+            new THREE.Vector3(1, 1, 1)
+        ));
 
         instances.setColorAt(index, new THREE.Color()
             .setFromVector3(new THREE.Vector3()
@@ -74,18 +75,38 @@ scene.add(directionalLight);
 const pointLight = new THREE.PointLight(0xffffff, 500);
 scene.add(pointLight);
 
-animator.addCallback((time, dt) => {
-    for (let i = 0; i < dimensions.x * dimensions.y; i++) {
+animator.addCallback((time, dt) => {    
+    for (let i = 0; i < positions.length; i++) {
         const position = new THREE.Vector3();
+        const rotation = new THREE.Quaternion();
         const mat = new THREE.Matrix4();
         instances.getMatrixAt(i, mat);
-        mat.decompose(position, new THREE.Quaternion(), new THREE.Vector3());
+        mat.decompose(position, rotation, new THREE.Vector3());
+        
+        if (backgroundSecret.value) {
+            const newPosition =  position.clone().add(position.clone().cross(pointLight.position).normalize().multiplyScalar(.1)).setLength(position.length());
+            newPosition.lerp(positions[i], .2);
+            position.fromArray(newPosition.toArray());
+        } else {
+        }
+
+        position.fromArray(!backgroundSecret.value ?
+            positions[i].toArray() :
+            position.clone().add(position.clone().cross(pointLight.position).normalize().multiplyScalar(.1)).setLength(position.length()).lerp(positions[i], .2).toArray()
+        );
+
         const hash = new THREE.Vector3(Math.sin(position.x), Math.cos(position.y), Math.tan(position.z)).normalize();
-        const rotation = new THREE.Quaternion().setFromAxisAngle(hash, hash.x + .2*time);
+        const speed = backgroundSecret.value ? 5. : .2;
+        const newRotation = new THREE.Quaternion().setFromAxisAngle(hash, hash.x + speed*time);
+        rotation.fromArray(newRotation.toArray());
+
         instances.setMatrixAt(i, mat.compose(position, rotation, new THREE.Vector3(1, 1, 1)));
     }
     instances.instanceMatrix.needsUpdate = true;
 
+    if (backgroundSecret.value) {
+        time = 5. * time;
+    }
     pointLight.position.set(
         dimensions.x*scale * Math.cos(.9*time),
         dimensions.y*scale * Math.sin(.5*time),
@@ -106,7 +127,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 
 
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({ antialias: false });
 renderer.setPixelRatio(.3);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -131,9 +152,15 @@ animator.addCallback(time => {
     composer.render();
 });
 
+const backgroundSecret = postShader.material.uniforms.uBackground;
 export const toggleBackgroundSecret = () => {
-    postShader.material.uniforms.uBackground.value = !postShader.material.uniforms.uBackground.value;
+    backgroundSecret.value = !backgroundSecret.value;
 };
+export const toggleBackgroundResolution = () => {
+    renderer.setPixelRatio(1.3 - renderer.getPixelRatio())
+    composer.setPixelRatio(renderer.getPixelRatio());
+    console.log(renderer.getPixelRatio());
+}
 
 
 

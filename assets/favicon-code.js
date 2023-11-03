@@ -44,7 +44,7 @@ function makeFavicon(THREE) {
 /*
     SECRET FOR LOGIN PAGE
 */
-import { toggleStats, toggleBackgroundSecret } from '../scripts/login/backgroundAnimation.js';
+import { toggleStats, toggleBackgroundSecret, toggleBackgroundResolution } from '../scripts/login/backgroundAnimation.js';
 const parseHTMLElement = s => {
     const elem = document.createElement('div');
     elem.innerHTML = s;
@@ -59,6 +59,8 @@ document.head.appendChild(parseHTMLElement(`
 dialog, dialog * {
     outline: none;
     border: none;
+    user-select: none;
+    -webkit-user-select: none;
 }
 dialog {
     padding: 1rem 2rem;
@@ -96,9 +98,10 @@ const dialog = parseHTMLElement(`
     <p>press [esc] to exit</p>
 
     <button id="dfillForm">Fill in the current form</button>
-    <button id="dbackground">Do something with the background</button>
-    <button id="dredirect">See something cool</button>
+    <button id="dbackground">Make background more epic</button>
+    <button id="dhighres">Toggle full resolution background</button>
     <button id="dperformance">Show performance</button>
+    <button id="dredirect">See something cool</button>
 </dialog>
 `)
 document.body.appendChild(dialog);
@@ -118,9 +121,11 @@ export const secret = ({ isLoginPage, usernameInput, passwordInput, confirmInput
             passwordInput.value = confirmInput.value = 'abfhd3fgh';
         },
         background: toggleBackgroundSecret,
-        redirect: () => { window.location.href = 'https://youtu.be/dQw4w9WgXcQ' },
+        highres: toggleBackgroundResolution,
         performance: toggleStats,
+        redirect: () => { window.location.href = 'https://youtu.be/dQw4w9WgXcQ' }
     }
+
     for (const button of buttons) {
         button.addEventListener('click', () => {
             clickCallbacks[button.id.slice(1)]();

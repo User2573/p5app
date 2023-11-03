@@ -57,7 +57,7 @@ const axis = () => new THREE.Vector3(1, 2, 3).normalize();
 const lines = [];
 const balls = [];
 
-for (let i = 0; i < 30; i++) {
+for (let i = 0; i < 50; i++) {
     const point = new THREE.Vector3().randomDirection().setLength(Math.sqrt(Math.random()));
     const axisToPoint = point.clone().sub(point.clone().projectOnVector(axis())).normalize();
     point.add(axisToPoint.multiplyScalar(.05));
@@ -98,8 +98,7 @@ animator.addCallback((time, dt) => {
 
 const canvas = document.getElementsByTagName('canvas')[0];
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas,
-    antialias: true
+    canvas: canvas
 });
 renderer.setPixelRatio(1);
 renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
