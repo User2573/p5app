@@ -159,7 +159,6 @@ export const toggleBackgroundSecret = () => {
 export const toggleBackgroundResolution = () => {
     renderer.setPixelRatio(1.3 - renderer.getPixelRatio())
     composer.setPixelRatio(renderer.getPixelRatio());
-    console.log(renderer.getPixelRatio());
 }
 
 
