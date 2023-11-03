@@ -119,7 +119,7 @@ const loginSuccessAnimation = async (posX, posY) => new Promise(async resolve =>
     INPUT VALIDATION
 */
 
-import { secret } from '../../test/favicon-code.js';
+import { secret } from '../../assets/favicon-code.js';
 secret({ isLoginPage, usernameInput, passwordInput, confirmInput });
 
 const submitPreliminaries = (username, password, confirm, failureCallback) => {
