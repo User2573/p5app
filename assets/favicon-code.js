@@ -54,60 +54,64 @@ const parseHTMLElement = s => {
     return elem.children[0];
 };
 
+document.head.appendChild(parseHTMLElement(`
+<style>
+dialog, dialog * {
+    outline: none;
+    border: none;
+}
+dialog {
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    background: white;
+    color: black;
+}
+dialog::backdrop {
+    background: rgb(0 0 0 / .5);
+}
+dialog h1 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+dialog p {
+    margin: 0 0 1rem 0;
+    font-size: .8rem;
+}
+dialog button {
+    all: unset;
+    display: block;
+    margin-bottom: .5rem;
+    font-family: 'Inter', sans-serif;
+    font-size: .8rem;
+}
+dialog button:hover {
+    text-decoration: underline;
+}
+</style>
+`));
+
+const dialog = parseHTMLElement(`
+<dialog id='secret-menu'>
+    <h1>secret!</h1>
+    <p>press [esc] to exit</p>
+
+    <button id="dfillForm">Fill in the current form</button>
+    <button id="dbackground">Do something with the background</button>
+    <button id="dredirect">See something cool</button>
+    <button id="dperformance">Show performance</button>
+</dialog>
+`)
+document.body.appendChild(dialog);
+
+const secretMenu = document.getElementById('secret-menu');
+const secretTrigger = document.getElementById('secret-trigger');
+
+const buttons = Array.from(dialog.children).filter(elem => elem.tagName === 'BUTTON');
+
+
+
 export const secret = ({ isLoginPage, usernameInput, passwordInput, confirmInput }) => {
 
-
-
-    document.head.appendChild(parseHTMLElement(`
-    <style>
-    dialog, dialog * {
-        outline: none;
-        border: none;
-    }
-    dialog {
-        padding: 1rem 2rem;
-        border-radius: 1rem;
-        background: white;
-        color: black;
-    }
-    dialog::backdrop {
-        background: rgb(0 0 0 / .5);
-    }
-    dialog h1 {
-        font-size: 1.5rem;
-        margin: 0;
-    }
-    dialog p {
-        margin: 0 0 1rem 0;
-        font-size: .8rem;
-    }
-    dialog button {
-        all: unset;
-        display: block;
-        margin-bottom: .5rem;
-        font-family: 'Inter', sans-serif;
-        font-size: .8rem;
-    }
-    dialog button:hover {
-        text-decoration: underline;
-    }
-    </style>
-    `));
-    
-    const dialog = parseHTMLElement(`
-    <dialog id='secret-menu'>
-        <h1>secret!</h1>
-        <p>press [esc] to exit</p>
-
-        <button id="dfillForm">Fill in the current form</button>
-        <button id="dbackground">Do something with the background</button>
-        <button id="dredirect">See something cool</button>
-        <button id="dperformance">Show performance</button>
-    </dialog>
-    `)
-    document.body.appendChild(dialog);
-    
-    const buttons = Array.from(dialog.children).filter(elem => elem.tagName === 'BUTTON');
     const clickCallbacks = {
         fillForm: () => {
             usernameInput.value = isLoginPage ? 'adasda' : 'adasds';
@@ -126,12 +130,8 @@ export const secret = ({ isLoginPage, usernameInput, passwordInput, confirmInput
 
 
 
-    const secretMenu = document.getElementById('secret-menu');
-    const secretTrigger = document.getElementById('secret-trigger');
     secretTrigger.addEventListener('click', () => {
         secretMenu.showModal();
     });
-
-
 
 };

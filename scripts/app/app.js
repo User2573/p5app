@@ -19,7 +19,6 @@ scene.background = new THREE.Color('rgb(7, 7, 10)');
 
 class Trail {
     constructor(points, color) {
-        console.log('constructing');
         this.positions = new Float32Array(points.flatMap(p => [p.x, p.y, p.z]));
         this.mesh = new THREE.Line(
             new THREE.BufferGeometry()
@@ -82,7 +81,6 @@ animator.addCallback((time, dt) => {
     camera.lookAt(0, 0, 0);
     
     
-    console.log(Math.round(dt*1000)/1000);
     for (const line of lines) {
         const newPoint = line.getPoint().applyAxisAngle(axis(), .1*line.speed);
         line.addPoint(newPoint);

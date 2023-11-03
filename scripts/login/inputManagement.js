@@ -225,7 +225,6 @@ loginForm.addEventListener('submit', e => {
             usernameInput.disabled = true;
             passwordInput.disabled = true;
             confirmInput.disabled = true;
-            header.onclick = () => {};
             loginForm.onsubmit = () => {};
             stopAnimation();
             await new Promise(resolve => setTimeout(resolve, 800));
