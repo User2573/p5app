@@ -5,7 +5,7 @@ const animationPlayed = sessionStorage.getItem('played');
 const animationBox = document.getElementById('animation');
 
 if (!username) {
-    window.location.replace('login.html');
+    window.location.replace('index.html');
 }
 
 if (!animationPlayed) {
