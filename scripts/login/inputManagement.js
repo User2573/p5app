@@ -20,6 +20,7 @@ window.addEventListener('DOMContentLoaded', () => {
     TOGGLE LOGIN OR SIGN UP
 */
 let isLoginPage = false;
+const title = document.getElementsByTagName('title')[0];
 const toggleLogin = document.getElementById('togglelogin');
 const loginHeader = document.getElementById('login-header');
 const signupHeader = document.getElementById('signup-header');
@@ -28,6 +29,7 @@ const loginSubmit = document.getElementById('login-submit');
 const signupSubmit = document.getElementById('signup-submit');
 const setLoginPage = state => {
     isLoginPage = state;
+    title.textContent = isLoginPage ? 'Log in' : 'Sign up';
     toggleLogin.textContent = isLoginPage ? 'Sign up instead' : 'Log in instead'
     loginHeader.style.display = isLoginPage ? 'unset' : 'none';
     signupHeader.style.display = isLoginPage ? 'none' : 'unset';
