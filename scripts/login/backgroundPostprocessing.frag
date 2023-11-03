@@ -29,8 +29,8 @@ void main() {
 
 
     if (uBackground) {
-        vec3 a = vec3(0.55735)*dot(vec3(0.55735),texel);
-        texel = a + (texel-a)*cos(2.*uTime) + cross(vec3(0.55735),(texel-a))*sin(2.*uTime);
+        vec4 q = vec4(vec3(sin(2.*uTime) / sqrt(3.)), cos(2.*uTime));
+        texel = texel + 2.*cross(cross(texel, q.xyz) + q.w*texel, q.xyz);
     }
 
 
