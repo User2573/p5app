@@ -9,7 +9,6 @@ export class Animator {
 
     constructor() {
         this.#stats.dom.id = 'stats';
-        this.toggleStats();
     }
 
     #animate() {
