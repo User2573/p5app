@@ -1,11 +1,1 @@
-app background trails
-    make every trail move at same speed
-    => outer trails slower
-
-
-
-window height or width too small
-    both scrollbars appear
-    fix !! !!
-
-find out how to animate font size for app
+- ios font size animation shrinks in steps (app.html)
